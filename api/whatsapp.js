@@ -1,5 +1,5 @@
-import Anthropic from '@anthropic-ai/sdk'
-import { createClient } from '@supabase/supabase-js'
+const Anthropic = require('@anthropic-ai/sdk')
+const { createClient } = require('@supabase/supabase-js')
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 const supabase = createClient(
@@ -16,7 +16,7 @@ const MANAGER_MAP = {
   'Bonamoussadi': process.env.MANAGER_BONAMOUSSADI,
 }
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method === 'GET') {
     const mode      = req.query['hub.mode']
     const token     = req.query['hub.verify_token']
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
 
   if (req.method === 'POST') {
     try {
-      const message = req.body.entry?.[0]?.changes?.[0]?.value?.messages?.[0]
+      const message = req.body?.entry?.[0]?.changes?.[0]?.value?.messages?.[0]
       if (!message || message.type !== 'text') {
         return res.status(200).json({ status: 'ignored' })
       }
