@@ -1,0 +1,2201 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C Pizza — Pizzeria Artisanale à Maképé Saint Tropez, Douala</title>
+  <meta name="description" content="C Pizza, la pizzeria artisanale de Maképé Saint Tropez à Douala. Four à 450°C, pâte fermentée 72h, livraison 30 min. Commandez maintenant.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── TOKENS ─── */
+    :root {
+      --red:        #AD0004;
+      --red-hover:  #8C0003;
+      --yellow:     #F3EC22;
+      --yellow-dim: rgba(243,236,34,0.15);
+      --gray:       #494949;
+      --gray-light: #5a5a5a;
+      --black:      #494949;
+      --black-deep: #3a3a3a;
+      --cream:      #FAFAF5;
+      --white:      #FFFFFF;
+      --text-light: #F5F0E8;
+      --text-muted: #B0A09A;
+
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-script:  'Playfair Display', serif;
+      --font-body:    'Montserrat', sans-serif;
+
+      --radius-btn: 50px;
+      --radius-card: 14px;
+      --shadow-card: 0 6px 28px rgba(0,0,0,0.10);
+      --shadow-card-hover: 0 14px 40px rgba(173,0,4,0.18), 0 4px 12px rgba(0,0,0,0.12);
+
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ─── RESET ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--black);
+      color: var(--text-light);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+    button { cursor: pointer; font-family: var(--font-body); border: none; }
+
+    /* ─── FADE-UP ANIMATION ─── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.72s var(--ease), transform 0.72s var(--ease);
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+    .fade-up.delay-1 { transition-delay: 0.1s; }
+    .fade-up.delay-2 { transition-delay: 0.2s; }
+    .fade-up.delay-3 { transition-delay: 0.3s; }
+    .fade-up.delay-4 { transition-delay: 0.4s; }
+
+    /* ─── SECTION LABEL ─── */
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 16px;
+    }
+    .section-label::before {
+      content: '';
+      width: 28px;
+      height: 2px;
+      background: var(--yellow);
+    }
+
+    /* ─── BUTTONS ─── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 15px 34px;
+      border-radius: var(--radius-btn);
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: transform 0.28s var(--ease), box-shadow 0.28s var(--ease), background 0.22s ease;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn:active { transform: translateY(0); }
+    .btn-red {
+      background: var(--red);
+      color: var(--white);
+      box-shadow: 0 4px 18px rgba(173,0,4,0.35);
+    }
+    .btn-red:hover {
+      background: var(--red-hover);
+      box-shadow: 0 8px 30px rgba(173,0,4,0.50);
+    }
+    .btn-outline-yellow {
+      background: transparent;
+      color: var(--yellow);
+      border: 2px solid var(--yellow);
+    }
+    .btn-outline-yellow:hover {
+      background: var(--yellow-dim);
+      box-shadow: 0 4px 20px rgba(243,236,34,0.18);
+    }
+    .btn-outline-white {
+      background: transparent;
+      color: var(--white);
+      border: 2px solid rgba(255,255,255,0.5);
+    }
+    .btn-outline-white:hover {
+      border-color: var(--white);
+      background: rgba(255,255,255,0.06);
+    }
+
+    /* ════════════════════════════════════
+       1. NAVIGATION
+    ════════════════════════════════════ */
+    #main-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: var(--black);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+    #main-nav.scrolled {
+      background: rgba(16,0,0,0.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 2px 24px rgba(0,0,0,0.4);
+    }
+    .nav-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 32px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+    .nav-logo img {
+      height: 46px;
+      width: 46px;
+      object-fit: contain;
+      border-radius: 50%;
+    }
+    .nav-logo-text {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      letter-spacing: 0.05em;
+      color: var(--white);
+      line-height: 1;
+    }
+    .nav-logo-sub {
+      font-family: var(--font-body);
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-top: 2px;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(245,240,232,0.75);
+      position: relative;
+      padding-bottom: 4px;
+      transition: color 0.2s ease;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 2px;
+      background: var(--yellow);
+      transition: width 0.28s var(--ease);
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-links a:hover::after,
+    .nav-links a.active::after { width: 100%; }
+    .nav-links a.active { color: var(--white); }
+    .nav-cta { flex-shrink: 0; }
+    .nav-burger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      padding: 6px;
+    }
+    .nav-burger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--white);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    /* Mobile drawer */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 99;
+      background: var(--black);
+      padding: 100px 32px 40px;
+      flex-direction: column;
+      gap: 32px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: var(--font-display);
+      font-size: 2.8rem;
+      color: var(--white);
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 20px;
+    }
+    .mobile-menu a:hover { color: var(--yellow); }
+
+    /* ════════════════════════════════════
+       2. HERO
+    ════════════════════════════════════ */
+    #hero {
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      background: var(--black);
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://placehold.co/1600x900/1a0000/330000?text=.');
+      background-size: cover;
+      background-position: center;
+    }
+    .hero-bg img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0.55;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(16,0,0,0.92) 0%,
+        rgba(16,0,0,0.65) 50%,
+        rgba(16,0,0,0.40) 100%
+      );
+    }
+    /* Yellow accent bar left */
+    .hero-accent-bar {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 5px;
+      background: var(--yellow);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 120px 32px 80px;
+      width: 100%;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--yellow);
+      color: var(--black);
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 7px 16px;
+      border-radius: 4px;
+      margin-bottom: 24px;
+    }
+    .hero-badge svg { width: 12px; height: 12px; fill: var(--black); }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(4rem, 10vw, 9.5rem);
+      line-height: 0.92;
+      letter-spacing: 0.02em;
+      color: var(--white);
+      margin-bottom: 28px;
+      max-width: 900px;
+    }
+    .hero-title span { color: var(--yellow); }
+    .hero-sub {
+      font-family: var(--font-body);
+      font-size: clamp(0.9rem, 1.4vw, 1.1rem);
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      color: rgba(245,240,232,0.80);
+      margin-bottom: 44px;
+      max-width: 500px;
+      line-height: 1.8;
+    }
+    .hero-sub strong {
+      font-weight: 700;
+      color: var(--white);
+    }
+    .hero-ctas {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .hero-delivery-badge {
+      position: absolute;
+      right: 80px;
+      bottom: 80px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: var(--red);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 16px;
+      box-shadow: 0 8px 30px rgba(173,0,4,0.50);
+      animation: pulse-badge 2.5s ease-in-out infinite;
+    }
+    .hero-delivery-badge .bd-num {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      color: var(--white);
+      line-height: 1;
+    }
+    .hero-delivery-badge .bd-label {
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.3;
+    }
+    @keyframes pulse-badge {
+      0%, 100% { transform: scale(1); box-shadow: 0 8px 30px rgba(173,0,4,0.50); }
+      50% { transform: scale(1.05); box-shadow: 0 12px 40px rgba(173,0,4,0.70); }
+    }
+    .hero-scroll-cue {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      z-index: 2;
+    }
+    .hero-scroll-cue span {
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(245,240,232,0.45);
+    }
+    .hero-scroll-cue svg {
+      width: 20px;
+      animation: bounce-down 1.8s ease-in-out infinite;
+    }
+    @keyframes bounce-down {
+      0%, 100% { transform: translateY(0); opacity: 0.5; }
+      50% { transform: translateY(6px); opacity: 1; }
+    }
+
+    /* ════════════════════════════════════
+       3. TRUST STRIP
+    ════════════════════════════════════ */
+    #trust-strip {
+      background: var(--red);
+      padding: 0;
+      overflow: hidden;
+    }
+    .trust-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 22px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0;
+    }
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      justify-content: center;
+    }
+    .trust-item + .trust-item {
+      border-left: 1px solid rgba(243,236,34,0.4);
+    }
+    .trust-icon {
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+    .trust-num {
+      font-family: var(--font-display);
+      font-size: 1.85rem;
+      color: var(--yellow);
+      line-height: 1;
+    }
+    .trust-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.9);
+      line-height: 1.4;
+    }
+
+    /* ════════════════════════════════════
+       3.5 QUICK LINKS (3 cards)
+    ════════════════════════════════════ */
+    #quick-links {
+      background: var(--black);
+      padding: 110px 32px 100px;
+      position: relative;
+    }
+    .ql-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+    .ql-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+    .ql-header .section-label {
+      justify-content: center;
+    }
+    .ql-header .section-label::before,
+    .ql-header .section-label::after {
+      content: '';
+      width: 28px;
+      height: 2px;
+      background: var(--yellow);
+    }
+    .ql-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      letter-spacing: 0.02em;
+      color: var(--cream);
+      line-height: 1;
+    }
+    .ql-title span { color: var(--yellow); }
+    .ql-sub {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-top: 14px;
+      max-width: 540px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .ql-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    .ql-card {
+      position: relative;
+      background: var(--black-deep);
+      border: 1px solid rgba(243,236,34,0.1);
+      border-radius: var(--radius-card);
+      padding: 48px 36px 40px;
+      text-align: left;
+      overflow: hidden;
+      transition: transform 0.4s var(--ease), border-color 0.3s ease, box-shadow 0.4s var(--ease);
+      display: block;
+      color: inherit;
+    }
+    .ql-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 0%, rgba(173,0,4,0.10) 100%);
+      opacity: 0;
+      transition: opacity 0.4s var(--ease);
+      pointer-events: none;
+    }
+    .ql-card:hover,
+    .ql-card:focus-visible {
+      transform: translateY(-8px);
+      border-color: var(--yellow);
+      box-shadow: 0 20px 50px rgba(173,0,4,0.22), 0 4px 12px rgba(0,0,0,0.3);
+      outline: none;
+    }
+    .ql-card:hover::before,
+    .ql-card:focus-visible::before { opacity: 1; }
+
+    .ql-icon {
+      width: 72px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--red);
+      border-radius: 18px;
+      margin-bottom: 32px;
+      position: relative;
+      z-index: 1;
+      transition: background 0.3s ease, transform 0.4s var(--ease);
+    }
+    .ql-card:hover .ql-icon {
+      background: var(--yellow);
+      transform: rotate(-4deg) scale(1.05);
+    }
+    .ql-icon svg {
+      width: 36px;
+      height: 36px;
+      stroke: var(--yellow);
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.3s ease;
+    }
+    .ql-card:hover .ql-icon svg { stroke: var(--black); }
+
+    .ql-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      letter-spacing: 0.04em;
+      color: var(--cream);
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+    .ql-card p {
+      font-size: 0.94rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 28px;
+      position: relative;
+      z-index: 1;
+    }
+    .ql-arrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      position: relative;
+      z-index: 1;
+      transition: gap 0.3s var(--ease);
+    }
+    .ql-card:hover .ql-arrow { gap: 14px; }
+    .ql-arrow svg {
+      width: 16px;
+      height: 16px;
+      stroke: var(--yellow);
+      fill: none;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: transform 0.3s var(--ease);
+    }
+    .ql-card:hover .ql-arrow svg { transform: translateX(4px); }
+
+    @media (max-width: 900px) {
+      .ql-grid { grid-template-columns: 1fr; gap: 18px; }
+      #quick-links { padding: 70px 22px; }
+      .ql-card { padding: 36px 28px; }
+      .ql-header { margin-bottom: 44px; }
+    }
+
+    /* ════════════════════════════════════
+       4. MENU SECTION
+    ════════════════════════════════════ */
+    #menu {
+      background: var(--cream);
+      padding: 100px 32px;
+    }
+    .menu-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+    .menu-header {
+      margin-bottom: 52px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+    .menu-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 5vw, 5.5rem);
+      color: var(--black);
+      line-height: 0.95;
+      letter-spacing: 0.02em;
+    }
+    .menu-title span { color: var(--red); }
+    /* Tabs */
+    .menu-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 10px 24px;
+      border-radius: 50px;
+      font-family: var(--font-body);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: transparent;
+      color: var(--gray);
+      border: 2px solid rgba(73,73,73,0.25);
+      transition: background 0.22s ease, color 0.22s ease, border-color 0.22s ease, transform 0.22s ease;
+    }
+    .tab-btn:hover { border-color: var(--red); color: var(--red); }
+    .tab-btn.active {
+      background: var(--red);
+      color: var(--white);
+      border-color: var(--red);
+      box-shadow: 0 4px 16px rgba(173,0,4,0.30);
+    }
+    .tab-btn.active:hover { transform: none; }
+
+    /* Pizza grid */
+    .pizza-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+    .pizza-card {
+      background: var(--white);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+      transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+      cursor: pointer;
+      display: none;
+    }
+    .pizza-card.show { display: block; }
+    .pizza-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-card-hover);
+    }
+    .pizza-card-img {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 4/3;
+    }
+    .pizza-card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s var(--ease);
+    }
+    .pizza-card:hover .pizza-card-img img {
+      transform: scale(1.06);
+    }
+    .pizza-badge {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: var(--yellow);
+      color: var(--black);
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 5px 11px;
+      border-radius: 50px;
+    }
+    .pizza-card-body {
+      padding: 20px 24px 24px;
+    }
+    .pizza-name {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: var(--black);
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+    .pizza-desc {
+      font-size: 0.78rem;
+      font-weight: 400;
+      color: var(--gray);
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+    .pizza-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .pizza-price {
+      font-family: var(--font-body);
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--red);
+    }
+    .pizza-price .price-small {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--gray);
+      margin-left: 4px;
+    }
+    .btn-card {
+      padding: 10px 22px;
+      border-radius: 50px;
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: var(--red);
+      color: var(--white);
+      transition: background 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
+    }
+    .btn-card:hover {
+      background: var(--red-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(173,0,4,0.35);
+    }
+
+    /* ════════════════════════════════════
+       5. OFFRES SECTION
+    ════════════════════════════════════ */
+    #offres {
+      background: var(--black);
+      padding: 100px 32px;
+    }
+    .offres-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+    .offres-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 5vw, 5rem);
+      color: var(--white);
+      line-height: 0.95;
+      margin-bottom: 52px;
+      letter-spacing: 0.02em;
+    }
+    .offres-title span { color: var(--yellow); }
+    .offres-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .offre-card {
+      position: relative;
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      background: #1A0505;
+      display: flex;
+      min-height: 260px;
+      border: 1px solid rgba(173,0,4,0.2);
+      transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+    }
+    .offre-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 40px rgba(173,0,4,0.25);
+    }
+    .offre-img {
+      width: 42%;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .offre-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s var(--ease);
+    }
+    .offre-card:hover .offre-img img { transform: scale(1.07); }
+    .offre-body {
+      padding: 28px 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+    }
+    .offre-badge {
+      display: inline-block;
+      background: var(--yellow);
+      color: var(--black);
+      font-size: 0.62rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 50px;
+      align-self: flex-start;
+    }
+    .offre-name {
+      font-family: var(--font-display);
+      font-size: 1.7rem;
+      color: var(--white);
+      letter-spacing: 0.04em;
+      line-height: 1.1;
+    }
+    .offre-desc {
+      font-size: 0.78rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+    .offre-price-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 4px;
+    }
+    .offre-price-old {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: line-through;
+    }
+    .offre-price-new {
+      font-family: var(--font-body);
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--yellow);
+    }
+
+    /* Yellow accent line top */
+    .offre-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--yellow);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .offre-card:hover::before { opacity: 1; }
+
+    /* ════════════════════════════════════
+       6. STORY SECTION
+    ════════════════════════════════════ */
+    #story {
+      background: var(--cream);
+      padding: 100px 32px;
+    }
+    .story-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .story-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.6rem, 4.5vw, 5rem);
+      color: var(--black);
+      line-height: 0.95;
+      letter-spacing: 0.02em;
+      margin-bottom: 28px;
+    }
+    .story-title span { color: var(--red); }
+    .story-text {
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: var(--gray);
+      line-height: 1.85;
+      margin-bottom: 40px;
+    }
+    .story-args {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .story-arg {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .arg-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(173,0,4,0.30);
+    }
+    .arg-text { flex: 1; }
+    .arg-title {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 3px;
+      letter-spacing: 0.04em;
+    }
+    .arg-desc {
+      font-size: 0.78rem;
+      color: var(--gray);
+      line-height: 1.65;
+    }
+    .story-img {
+      position: relative;
+    }
+    .story-img-main {
+      width: 100%;
+      aspect-ratio: 4/5;
+      object-fit: cover;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    }
+    .story-img-float {
+      position: absolute;
+      bottom: -24px;
+      left: -24px;
+      width: 48%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: 16px;
+      border: 5px solid var(--cream);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.14);
+    }
+    .story-img-badge {
+      position: absolute;
+      top: 20px;
+      right: -20px;
+      background: var(--yellow);
+      color: var(--black);
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      padding: 16px 18px;
+      border-radius: 14px;
+      text-align: center;
+      line-height: 1.1;
+      box-shadow: 0 6px 20px rgba(243,236,34,0.40);
+    }
+    .story-img-badge .badge-sub {
+      font-family: var(--font-body);
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      display: block;
+    }
+
+    /* ════════════════════════════════════
+       7. TESTIMONIALS
+    ════════════════════════════════════ */
+    #avis {
+      background: var(--white);
+      padding: 100px 32px;
+    }
+    .avis-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+    .avis-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    .avis-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 4vw, 4.5rem);
+      color: var(--black);
+      letter-spacing: 0.02em;
+      margin-bottom: 12px;
+    }
+    .avis-sub {
+      font-size: 0.88rem;
+      color: var(--gray);
+      font-weight: 400;
+    }
+    .avis-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .avis-card {
+      background: var(--cream);
+      border-radius: var(--radius-card);
+      padding: 32px 28px;
+      position: relative;
+      transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+    }
+    .avis-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.08);
+    }
+    .avis-quote {
+      font-family: var(--font-display);
+      font-size: 4rem;
+      color: var(--yellow);
+      line-height: 0.5;
+      margin-bottom: 20px;
+      opacity: 0.7;
+    }
+    .avis-text {
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: var(--gray);
+      line-height: 1.8;
+      margin-bottom: 24px;
+      font-style: italic;
+    }
+    .avis-stars {
+      display: flex;
+      gap: 3px;
+      margin-bottom: 18px;
+    }
+    .avis-stars svg {
+      width: 16px;
+      height: 16px;
+      fill: var(--yellow);
+    }
+    .avis-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .avis-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 1rem;
+      color: var(--white);
+      flex-shrink: 0;
+    }
+    .avis-name {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--black);
+    }
+    .avis-date {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    /* Google badge */
+    .avis-verified {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--gray);
+      letter-spacing: 0.08em;
+      opacity: 0.6;
+    }
+
+    /* ════════════════════════════════════
+       8. LOCALISATION
+    ════════════════════════════════════ */
+    #localisation {
+      background: var(--black);
+      padding: 110px 32px 100px;
+    }
+    .loc-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+    .loc-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+    .loc-header .section-label {
+      justify-content: center;
+    }
+    .loc-header .section-label::before,
+    .loc-header .section-label::after {
+      content: '';
+      width: 28px;
+      height: 2px;
+      background: var(--yellow);
+    }
+    .loc-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 4vw, 4.8rem);
+      color: var(--cream);
+      line-height: 0.95;
+      letter-spacing: 0.02em;
+      margin-bottom: 16px;
+    }
+    .loc-title span { color: var(--yellow); }
+    .loc-sub {
+      font-size: 1rem;
+      color: var(--text-muted);
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    .loc-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 22px;
+    }
+    .loc-card {
+      position: relative;
+      background: var(--black-deep);
+      border: 1px solid rgba(243,236,34,0.1);
+      border-radius: var(--radius-card);
+      padding: 36px 30px 30px;
+      overflow: hidden;
+      transition: transform 0.4s var(--ease), border-color 0.3s ease, box-shadow 0.4s var(--ease);
+      display: flex;
+      flex-direction: column;
+    }
+    .loc-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(173,0,4,0.10) 100%);
+      opacity: 0;
+      transition: opacity 0.4s var(--ease);
+      pointer-events: none;
+    }
+    .loc-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--yellow);
+      box-shadow: 0 20px 50px rgba(173,0,4,0.22), 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .loc-card:hover::before { opacity: 1; }
+
+    .loc-card-num {
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      color: var(--red);
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+    }
+    .loc-card-name {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      letter-spacing: 0.06em;
+      color: var(--cream);
+      line-height: 1;
+      margin-bottom: 18px;
+      position: relative;
+      z-index: 1;
+    }
+    .loc-card-addr {
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--text-light);
+      line-height: 1.55;
+      margin-bottom: 18px;
+      position: relative;
+      z-index: 1;
+    }
+    .loc-card-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 22px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid rgba(245,240,232,0.1);
+      position: relative;
+      z-index: 1;
+    }
+    .loc-card-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+    .loc-card-line svg {
+      width: 15px;
+      height: 15px;
+      stroke: var(--yellow);
+      fill: none;
+      stroke-width: 1.8;
+      flex-shrink: 0;
+    }
+    .loc-card-ctas {
+      display: flex;
+      gap: 8px;
+      margin-top: auto;
+      position: relative;
+      z-index: 1;
+    }
+    .loc-card-cta {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 12px;
+      border-radius: 50px;
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: var(--red);
+      color: var(--white);
+      transition: background 0.3s ease, transform 0.3s var(--ease), color 0.3s ease, border-color 0.3s ease;
+      border: 1.5px solid var(--red);
+    }
+    .loc-card-cta:hover { background: var(--red-hover); border-color: var(--red-hover); transform: translateY(-2px); }
+    .loc-card-cta-outline {
+      background: transparent;
+      color: var(--yellow);
+      border: 1.5px solid rgba(243,236,34,0.35);
+    }
+    .loc-card-cta-outline:hover {
+      background: var(--yellow);
+      color: var(--black);
+      border-color: var(--yellow);
+    }
+
+    @media (max-width: 1100px) {
+      .loc-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 560px) {
+      .loc-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ════════════════════════════════════
+       9. CTA BAND
+    ════════════════════════════════════ */
+    #cta-band {
+      background: var(--red);
+      padding: 72px 32px;
+    }
+    .cta-band-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .cta-band-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 4rem);
+      color: var(--white);
+      line-height: 0.95;
+      letter-spacing: 0.02em;
+    }
+    .cta-band-title span { color: var(--yellow); }
+    .cta-band-sub {
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.7;
+      margin-top: 10px;
+    }
+    .cta-band-right {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* ════════════════════════════════════
+       10. FOOTER
+    ════════════════════════════════════ */
+    #footer {
+      background: var(--black-deep);
+      padding: 64px 32px 32px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .footer-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 48px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 32px;
+    }
+    .footer-brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .footer-brand-logo img {
+      height: 46px;
+      width: 46px;
+      object-fit: contain;
+      border-radius: 50%;
+    }
+    .footer-brand-name {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: var(--white);
+    }
+    .footer-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+    .footer-socials {
+      display: flex;
+      gap: 10px;
+    }
+    .social-link {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+    }
+    .social-link:hover {
+      border-color: var(--yellow);
+      color: var(--yellow);
+      background: var(--yellow-dim);
+    }
+    .footer-col-title {
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: 20px;
+    }
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .footer-links a {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      transition: color 0.2s ease;
+    }
+    .footer-links a:hover { color: var(--white); }
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .footer-copy {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.25);
+    }
+    .footer-legal {
+      display: flex;
+      gap: 24px;
+    }
+    .footer-legal a {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.25);
+      transition: color 0.2s ease;
+    }
+    .footer-legal a:hover { color: var(--text-muted); }
+
+    /* ════════════════════════════════════
+       RESPONSIVE
+    ════════════════════════════════════ */
+    @media (max-width: 1024px) {
+      .pizza-grid { grid-template-columns: repeat(2, 1fr); }
+      .story-inner { grid-template-columns: 1fr; gap: 48px; }
+      .story-img-badge { right: 20px; }
+      .loc-inner { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links, .nav-cta { display: none; }
+      .nav-burger { display: flex; }
+      .hero-delivery-badge { display: none; }
+      .hero-title { font-size: clamp(3.2rem, 11vw, 6rem); }
+      .trust-inner { flex-wrap: wrap; gap: 0; }
+      .trust-item { min-width: 50%; padding: 12px 0; }
+      .trust-item:nth-child(n+3) { border-top: 1px solid rgba(243,236,34,0.25); }
+      .trust-item:nth-child(odd) { border-left: none; }
+      .offres-grid { grid-template-columns: 1fr; }
+      .offre-card { flex-direction: column; min-height: auto; }
+      .offre-img { width: 100%; height: 200px; }
+      .avis-grid { grid-template-columns: 1fr; }
+      .menu-header { flex-direction: column; align-items: flex-start; }
+      .cta-band-inner { justify-content: center; text-align: center; }
+      .cta-band-right { justify-content: center; }
+      .footer-top { grid-template-columns: 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+      .footer-legal { justify-content: center; }
+    }
+
+    @media (max-width: 480px) {
+      .pizza-grid { grid-template-columns: 1fr; }
+      .hero-ctas { flex-direction: column; align-items: flex-start; }
+      .btn { width: 100%; justify-content: center; }
+      .loc-ctas { flex-direction: column; }
+      .loc-ctas .btn { width: 100%; justify-content: center; }
+      #menu, #offres, #story, #avis, #localisation { padding: 72px 20px; }
+    }
+
+    /* Focus visible */
+    :focus-visible {
+      outline: 2px solid var(--yellow);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ NAVIGATION ══ -->
+  <nav id="main-nav" role="navigation" aria-label="Navigation principale">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo" aria-label="C Pizza — Accueil">
+        <img src="brand_assets/logo-new.jpeg" alt="Logo C Pizza" width="46" height="46">
+        <div>
+          <div class="nav-logo-text">C PIZZA</div>
+          <div class="nav-logo-sub">Maképé Saint Tropez</div>
+        </div>
+      </a>
+
+      <ul class="nav-links" role="list">
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="offres.html">Offres</a></li>
+        <li><a href="story.html">Notre histoire</a></li>
+        <li><a href="#localisation">Nous trouver</a></li>
+      </ul>
+
+      <a href="tel:+237600000000" class="btn btn-red nav-cta" aria-label="Commander par téléphone">
+        Commander →
+      </a>
+
+      <button class="nav-burger" id="burger-btn" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobile-menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile drawer -->
+  <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Menu mobile">
+    <a href="menu.html" class="mobile-link">Menu</a>
+    <a href="offres.html" class="mobile-link">Offres</a>
+    <a href="story.html" class="mobile-link">Notre histoire</a>
+    <a href="#localisation" class="mobile-link">Nous trouver</a>
+    <a href="tel:+237600000000" class="btn btn-red" style="width:100%;justify-content:center;border-radius:50px;margin-top:16px;">
+      Commander maintenant
+    </a>
+  </div>
+
+  <!-- ══ HERO ══ -->
+  <section id="hero" aria-label="Bannière principale">
+    <div class="hero-bg" aria-hidden="true">
+      <img src="https://placehold.co/1600x900/1a0505/2a0505?text=." alt="" role="presentation">
+    </div>
+    <div class="hero-overlay" aria-hidden="true"></div>
+    <div class="hero-accent-bar" aria-hidden="true"></div>
+
+    <div class="hero-content">
+      <div class="hero-badge fade-up">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+        Maképé Saint Tropez · Douala
+      </div>
+
+      <h1 class="hero-title fade-up delay-1">
+        LA PIZZA QUI<br>
+        <span>RÉVEILLE</span><br>
+        DOUALA
+      </h1>
+
+      <p class="hero-sub fade-up delay-2">
+        <strong>Four à 450°C</strong> · Pâte fermentée 72h · Ingrédients frais sélectionnés.<br>
+        Livraison en 30 minutes à Maképé et ses environs.
+      </p>
+
+      <div class="hero-ctas fade-up delay-3">
+        <a href="tel:+237600000000" class="btn btn-red">
+          Commander maintenant
+        </a>
+        <a href="#menu" class="btn btn-outline-yellow">
+          Voir le menu
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-delivery-badge" aria-hidden="true">
+      <span class="bd-num">30</span>
+      <span class="bd-label">min<br>livraison</span>
+    </div>
+
+    <div class="hero-scroll-cue" aria-hidden="true">
+      <span>Découvrir</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="rgba(245,240,232,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 5v14M5 12l7 7 7-7"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ══ TRUST STRIP ══ -->
+  <div id="trust-strip" role="complementary" aria-label="Chiffres clés">
+    <div class="trust-inner">
+      <div class="trust-item">
+        <div class="trust-icon" aria-hidden="true">🍕</div>
+        <div>
+          <div class="trust-num">50+</div>
+          <div class="trust-label">Pizzas au menu</div>
+        </div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon" aria-hidden="true">🔥</div>
+        <div>
+          <div class="trust-num">450°C</div>
+          <div class="trust-label">Four à bois</div>
+        </div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon" aria-hidden="true">⚡</div>
+        <div>
+          <div class="trust-num">30min</div>
+          <div class="trust-label">Livraison express</div>
+        </div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon" aria-hidden="true">⭐</div>
+        <div>
+          <div class="trust-num">4.8</div>
+          <div class="trust-label">Note Google</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ QUICK LINKS ══ -->
+  <section id="quick-links" aria-labelledby="ql-title">
+    <div class="ql-inner">
+      <div class="ql-header fade-up">
+        <div class="section-label">Explorer C Pizza</div>
+        <h2 class="ql-title" id="ql-title">PLONGEZ DANS <span>L'UNIVERS</span></h2>
+        <p class="ql-sub">Découvrez notre carte, nos offres du moment et l'histoire d'une pizzeria pas comme les autres.</p>
+      </div>
+
+      <div class="ql-grid">
+        <a href="menu.html" class="ql-card fade-up delay-1" aria-label="Voir notre menu">
+          <div class="ql-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/></svg>
+          </div>
+          <h3>Notre menu</h3>
+          <p>50+ pizzas au four à bois, des classiques napolitaines aux créations signature C Pizza.</p>
+          <span class="ql-arrow">
+            Voir la carte
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </span>
+        </a>
+
+        <a href="offres.html" class="ql-card fade-up delay-2" aria-label="Voir nos offres spéciales">
+          <div class="ql-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M20 7H4a1 1 0 00-1 1v3a1 1 0 001 1h16a1 1 0 001-1V8a1 1 0 00-1-1zM12 7V3M12 12v9M3 21h18M16 3l-4 4-4-4"/></svg>
+          </div>
+          <h3>Offres spéciales</h3>
+          <p>Promotions du moment, formules midi, pack famille — la pizza premium à prix doux.</p>
+          <span class="ql-arrow">
+            Voir les offres
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </span>
+        </a>
+
+        <a href="story.html" class="ql-card fade-up delay-3" aria-label="Découvrir notre histoire">
+          <div class="ql-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20V3H6.5A2.5 2.5 0 004 5.5v14zM4 19.5A2.5 2.5 0 006.5 22H20v-5"/></svg>
+          </div>
+          <h3>Notre histoire</h3>
+          <p>De Maképé Saint Tropez à 4 adresses dans Douala. La passion d'une vraie pizza, depuis le premier four.</p>
+          <span class="ql-arrow">
+            Lire l'histoire
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ MENU ══ -->
+  <section id="menu" aria-labelledby="menu-title">
+    <div class="menu-inner">
+      <div class="menu-header fade-up">
+        <div>
+          <div class="section-label">Notre carte</div>
+          <h2 class="menu-title" id="menu-title">NOS <span>PIZZAS</span></h2>
+        </div>
+        <div class="menu-tabs" role="tablist" aria-label="Catégories de pizzas">
+          <button class="tab-btn active" data-tab="classiques" role="tab" aria-selected="true" aria-controls="tab-classiques">Classiques</button>
+          <button class="tab-btn" data-tab="speciales" role="tab" aria-selected="false" aria-controls="tab-speciales">Spéciales</button>
+          <button class="tab-btn" data-tab="vegetariennes" role="tab" aria-selected="false" aria-controls="tab-vegetariennes">Végétariennes</button>
+        </div>
+      </div>
+
+      <!-- Classiques -->
+      <div class="pizza-grid" id="tab-classiques" role="tabpanel">
+        <article class="pizza-card show fade-up">
+          <div class="pizza-card-img">
+            <img src="https://placehold.co/400x300/1a0505/cc0004?text=Margherita" alt="Pizza Margherita" loading="lazy" width="400" height="300">
+          </div>
+          <div class="pizza-card-body">
+            <h3 class="pizza-name">MARGHERITA</h3>
+            <p class="pizza-desc">Tomate San Marzano, mozzarella fior di latte, basilic frais, huile d'olive extra vierge.</p>
+            <div class="pizza-footer">
+              <div class="pizza-price">3 500<span class="price-small">FCFA</span></div>
+              <button class="btn-card" aria-label="Commander la pizza Margherita">Commander</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="pizza-card show fade-up delay-1">
+          <div class="pizza-card-img">
+            <img src="https://placehold.co/400x300/1a0505/cc0004?text=Reine" alt="Pizza Reine" loading="lazy" width="400" height="300">
+            <div class="pizza-badge" aria-label="Bestseller">BESTSELLER</div>
+          </div>
+          <div class="pizza-card-body">
+            <h3 class="pizza-name">LA REINE</h3>
+            <p class="pizza-desc">Tomate, mozzarella, jambon blanc, champignons de Paris, olives noires.</p>
+            <div class="pizza-footer">
+              <div class="pizza-price">4 200<span class="price-small">FCFA</span></div>
+              <button class="btn-card" aria-label="Commander la pizza La Reine">Commander</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="pizza-card show fade-up delay-2">
+          <div class="pizza-card-img">
+            <img src="https://placehold.co/400x300/1a0505/cc0004?text=Quatre+Fromages" alt="Pizza Quatre Fromages" loading="lazy" width="400" height="300">
+          </div>
+          <div class="pizza-card-body">
+            <h3 class="pizza-name">4 FROMAGES</h3>
+            <p class="pizza-desc">Mozzarella, gorgonzola, parmesan, chèvre frais, miel de fleurs sauvages.</p>
+            <div class="pizza-footer">
+              <div class="pizza-price">4 500<span class="price-small">FCFA</span></div>
+              <button class="btn-card" aria-label="Commander la pizza 4 Fromages">Commander</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="pizza-card show fade-up delay-3">
+          <div class="pizza-card-img">
+            <img src="https://placehold.co/400x300/1a0505/cc0004?text=Pepperoni" alt="Pizza Pepperoni" loading="lazy" width="400" height="300">
+          </div>
+          <div class="pizza-card-body">
+            <h3 class="pizza-name">PEPPERONI</h3>
+            <p class="pizza-desc">Tomate maison, mozzarella fondante, généreux pepperoni épicé, origan.</p>
+            <div class="pizza-footer">
+              <div class="pizza-price">4 800<span class="price-small">FCFA</span></div>
+              <button class="btn-card" aria-label="Commander la pizza Pepperoni">Commander</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="pizza-card show fade-up delay-4">
+          <div class="pizza-card-img">
+            <img src="https://placehold.co/400x300/1a0505/cc0004?text=Calzone" alt="Calzone" loading="lazy" width="400" height="300">
+          </div>
+          <div class="pizza-card-body">
+            <h3 class="pizza-name">CALZONE</h3>
+            <p class="pizza-desc">Pizza pliée, farcie de ricotta, épinards, jambon sec, tomate, mozzarella.</p>
+            <div class="pizza-footer">
+              <div class="pizza-price">4 500<span class="price-small">FCFA</span></div>
+              <button class="btn-card" aria-label="Commander le Calzone">Commander</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="pizza-card show fade-up delay-4">
+          <div class="pizza-card-img">
+            <img src="https://placehold.co/400x300/1a0505/cc0004?text=Napolitaine" alt="Pizza Napolitaine" loading="lazy" width="400" height="300">
+          </div>
+          <div class="pizza-card-body">
+            <h3 class="pizza-name">NAPOLITAINE</h3>
+            <p class="pizza-desc">Tomate, mozzarella, anchois, câpres, olives, origan — tradition Naples.</p>
+            <div class="pizza-footer">
+              <div class="pizza-price">4 200<span class="price-small">FCFA</span></div>
+              <button class="btn-card" aria-label="Commander la pizza Napolitaine">Commander</button>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Spéciales (hidden by default) -->
+      <div class="pizza-grid" id="tab-speciales" role="tabpanel" style="display:none">
+        <article class="pizza-card show fade-up">
+          <div class="pizza-card-img">
+            <img src="https://placehold.co/400x300/1a0505/cc0004?text=C+Special" alt="Pizza C Special" loading="lazy" width="400" height="300">
+            <div class="pizza-badge">SIGNATURE</div>
+          </div>
+          <div class="pizza-card-body">
+            <h3 class="pizza-name">C SPECIAL</h3>
+            <p class="pizza-desc">La pizza signature C Pizza : poulet grillé, avocat, tomates séchées, crème fraîche, roquette.</p>
+            <div class="pizza-footer">
+              <div class="pizza-price">5 500<span class="price-small">FCFA</span></div>
+              <button class="btn-card" aria-label="Commander la pizza C Special">Commander</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="pizza-card show fade-up delay-1">
+          <div class="pizza-card-img">
+            <img src="https://placehold.co/400x300/1a0505/cc0004?text=Royale" alt="Pizza Royale" loading="lazy" width="400" height="300">
+          </div>
+          <div class="pizza-card-body">
+            <h3 class="pizza-name">ROYALE</h3>
+            <p class="pizza-desc">Crème fraîche, mozzarella, saumon fumé, câpres, oignons rouges, citron.</p>
+            <div class="pizza-footer">
+              <div class="pizza-price">5 800<span class="price-small">FCFA</span></div>
+              <button class="btn-card" aria-label="Commander la pizza Royale">Commander</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="pizza-card show fade-up delay-2">
+          <div class="pizza-card-img">
+            <img src="https://placehold.co/400x300/1a0505/cc0004?text=Ndole+Pizza" alt="Pizza Ndolé" loading="lazy" width="400" height="300">
+            <div class="pizza-badge">LOCAL</div>
+          </div>
+          <div class="pizza-card-body">
+            <h3 class="pizza-name">NDOLÉ PIZZA</h3>
+            <p class="pizza-desc">Pâte croustillante, sauce ndolé maison, crevettes, noix de cajou, tomate fraîche.</p>
+            <div class="pizza-footer">
+              <div class="pizza-price">5 200<span class="price-small">FCFA</span></div>
+              <button class="btn-card" aria-label="Commander la pizza Ndolé">Commander</button>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Végétariennes (hidden by default) -->
+      <div class="pizza-grid" id="tab-vegetariennes" role="tabpanel" style="display:none">
+        <article class="pizza-card show fade-up">
+          <div class="pizza-card-img">
+            <img src="https://placehold.co/400x300/1a0505/cc0004?text=Primavera" alt="Pizza Primavera" loading="lazy" width="400" height="300">
+          </div>
+          <div class="pizza-card-body">
+            <h3 class="pizza-name">PRIMAVERA</h3>
+            <p class="pizza-desc">Tomate, mozzarella, poivrons multicolores, courgettes, champignons, basilic.</p>
+            <div class="pizza-footer">
+              <div class="pizza-price">4 000<span class="price-small">FCFA</span></div>
+              <button class="btn-card" aria-label="Commander la pizza Primavera">Commander</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="pizza-card show fade-up delay-1">
+          <div class="pizza-card-img">
+            <img src="https://placehold.co/400x300/1a0505/cc0004?text=Chèvre+Miel" alt="Pizza Chèvre Miel" loading="lazy" width="400" height="300">
+            <div class="pizza-badge">FAVORI</div>
+          </div>
+          <div class="pizza-card-body">
+            <h3 class="pizza-name">CHÈVRE MIEL</h3>
+            <p class="pizza-desc">Crème fraîche, chèvre frais, miel d'acacia, noix, poires caramélisées, roquette.</p>
+            <div class="pizza-footer">
+              <div class="pizza-price">4 500<span class="price-small">FCFA</span></div>
+              <button class="btn-card" aria-label="Commander la pizza Chèvre Miel">Commander</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ OFFRES ══ -->
+  <section id="offres" aria-labelledby="offres-title">
+    <div class="offres-inner">
+      <div class="section-label fade-up">Promotions du moment</div>
+      <h2 class="offres-title fade-up delay-1">OFFRES DU <span>MOMENT</span></h2>
+
+      <div class="offres-grid">
+        <article class="offre-card fade-up delay-1">
+          <div class="offre-img">
+            <img src="https://placehold.co/320x260/1a0505/cc0004?text=Pizza+Family" alt="Pack Famille C Pizza" loading="lazy" width="320" height="260">
+          </div>
+          <div class="offre-body">
+            <span class="offre-badge">-20%</span>
+            <h3 class="offre-name">PACK FAMILLE</h3>
+            <p class="offre-desc">2 grandes pizzas au choix + 1 boisson 1.5L + 4 cannolis maison. Idéal pour partager.</p>
+            <div class="offre-price-row">
+              <span class="offre-price-old">18 000 FCFA</span>
+              <span class="offre-price-new">14 400 FCFA</span>
+            </div>
+            <a href="tel:+237600000000" class="btn btn-outline-yellow" style="margin-top:16px;padding:11px 24px;font-size:0.76rem;">
+              Profiter de l'offre
+            </a>
+          </div>
+        </article>
+
+        <article class="offre-card fade-up delay-2">
+          <div class="offre-img">
+            <img src="https://placehold.co/320x260/1a0505/cc0004?text=Midi+Express" alt="Menu Midi Express" loading="lazy" width="320" height="260">
+          </div>
+          <div class="offre-body">
+            <span class="offre-badge">MIDI</span>
+            <h3 class="offre-name">MIDI EXPRESS</h3>
+            <p class="offre-desc">1 pizza au choix + 1 boisson 33cl + 1 tiramisu maison. Disponible 11h–14h en semaine.</p>
+            <div class="offre-price-row">
+              <span class="offre-price-old">7 500 FCFA</span>
+              <span class="offre-price-new">5 900 FCFA</span>
+            </div>
+            <a href="tel:+237600000000" class="btn btn-outline-yellow" style="margin-top:16px;padding:11px 24px;font-size:0.76rem;">
+              Profiter de l'offre
+            </a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ STORY ══ -->
+  <section id="story" aria-labelledby="story-title">
+    <div class="story-inner">
+      <div class="story-left fade-up">
+        <div class="section-label">Notre passion</div>
+        <h2 class="story-title" id="story-title">L'ART DE LA<br>VRAIE <span>PIZZA</span></h2>
+        <p class="story-text">
+          Chez C Pizza, chaque pizza est une déclaration. Installés au cœur de Maképé Saint Tropez à Douala, nous apportons la tradition napolitaine avec une touche locale qui nous est unique. Notre four artisanal monte à 450°C pour des cuissons parfaites en moins de 90 secondes.
+        </p>
+        <div class="story-args">
+          <div class="story-arg">
+            <div class="arg-icon" aria-hidden="true">🔥</div>
+            <div class="arg-text">
+              <div class="arg-title">Four à 450°C</div>
+              <div class="arg-desc">Cuisson express à haute température pour une pâte croustillante à l'extérieur, moelleuse à l'intérieur.</div>
+            </div>
+          </div>
+          <div class="story-arg">
+            <div class="arg-icon" aria-hidden="true">⏱</div>
+            <div class="arg-text">
+              <div class="arg-title">Pâte fermentée 72h</div>
+              <div class="arg-desc">Notre pâte repose 72 heures pour développer une profondeur de goût et une légèreté incomparables.</div>
+            </div>
+          </div>
+          <div class="story-arg">
+            <div class="arg-icon" aria-hidden="true">🌿</div>
+            <div class="arg-text">
+              <div class="arg-title">Ingrédients frais sélectionnés</div>
+              <div class="arg-desc">Produits locaux et importés rigoureusement sélectionnés — tomates, fromages, charcuterie de qualité.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-img fade-up delay-2">
+        <img class="story-img-main" src="https://placehold.co/600x750/1a0505/cc0004?text=Four+à+Pizza" alt="Notre four artisanal à 450°C" loading="lazy" width="600" height="750">
+        <img class="story-img-float" src="https://placehold.co/280x280/fafaf5/ad0004?text=Ingrédients" alt="Ingrédients frais" loading="lazy" width="280" height="280">
+        <div class="story-img-badge" aria-label="Depuis 2020">
+          2020
+          <span class="badge-sub">depuis</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ TESTIMONIALS ══ -->
+  <section id="avis" aria-labelledby="avis-title">
+    <div class="avis-inner">
+      <div class="avis-header fade-up">
+        <div class="section-label" style="justify-content:center;">Ce que disent nos clients</div>
+        <h2 class="avis-title" id="avis-title">ILS ADORENT C PIZZA</h2>
+        <p class="avis-sub">Plus de 500 avis positifs sur Google — parce que la qualité se ressent.</p>
+      </div>
+
+      <div class="avis-grid">
+        <article class="avis-card fade-up delay-1">
+          <div class="avis-verified">Google ✓</div>
+          <div class="avis-quote" aria-hidden="true">"</div>
+          <p class="avis-text">La meilleure pizza de Douala, sans hésitation. La pâte est incroyablement légère et croustillante. J'y retourne chaque semaine avec ma famille !</p>
+          <div class="avis-stars" aria-label="Note : 5 étoiles sur 5">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <div class="avis-author">
+            <div class="avis-avatar" aria-hidden="true">CM</div>
+            <div>
+              <div class="avis-name">Charlotte M.</div>
+              <div class="avis-date">Il y a 3 semaines · Maképé</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="avis-card fade-up delay-2">
+          <div class="avis-verified">Google ✓</div>
+          <div class="avis-quote" aria-hidden="true">"</div>
+          <p class="avis-text">La livraison était ultra rapide, la pizza encore bien chaude à l'arrivée. La Ndolé Pizza est une vraie révélation — originalité et saveur au rendez-vous !</p>
+          <div class="avis-stars" aria-label="Note : 5 étoiles sur 5">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <div class="avis-author">
+            <div class="avis-avatar" aria-hidden="true">KN</div>
+            <div>
+              <div class="avis-name">Kevin N.</div>
+              <div class="avis-date">Il y a 1 mois · Makepe</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="avis-card fade-up delay-3">
+          <div class="avis-verified">Google ✓</div>
+          <div class="avis-quote" aria-hidden="true">"</div>
+          <p class="avis-text">Cadre sympa, service rapide et pizzas vraiment délicieuses. La croûte est parfaite — ni trop fine ni trop épaisse. C Pizza, c'est notre adresse de référence à Douala.</p>
+          <div class="avis-stars" aria-label="Note : 5 étoiles sur 5">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <div class="avis-author">
+            <div class="avis-avatar" aria-hidden="true">AL</div>
+            <div>
+              <div class="avis-name">Ange L.</div>
+              <div class="avis-date">Il y a 2 semaines · Douala</div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ LOCALISATION ══ -->
+  <section id="localisation" aria-labelledby="loc-title">
+    <div class="loc-inner">
+      <div class="fade-up">
+        <div class="section-label">Venez nous voir</div>
+        <h2 class="loc-title" id="loc-title">NOUS <span>TROUVER</span></h2>
+        <div class="loc-items">
+          <div class="loc-item">
+            <div class="loc-icon" aria-hidden="true">📍</div>
+            <div>
+              <div class="loc-label">Adresse</div>
+              <div class="loc-value">Maképé Saint Tropez<br>Douala, Cameroun</div>
+            </div>
+          </div>
+          <div class="loc-item">
+            <div class="loc-icon" aria-hidden="true">🕐</div>
+            <div>
+              <div class="loc-label">Horaires</div>
+              <div class="loc-value">Lundi – Vendredi : 11h – 22h30<br>Samedi – Dimanche : 11h – 23h30</div>
+            </div>
+          </div>
+          <div class="loc-item">
+            <div class="loc-icon" aria-hidden="true">📞</div>
+            <div>
+              <div class="loc-label">Téléphone</div>
+              <div class="loc-value">+237 6XX XXX XXX</div>
+            </div>
+          </div>
+          <div class="loc-item">
+            <div class="loc-icon" aria-hidden="true">🛵</div>
+            <div>
+              <div class="loc-label">Livraison</div>
+              <div class="loc-value">Maképé, Bonanjo, Akwa, Bonapriso<br>et environs — 30 min chrono</div>
+            </div>
+          </div>
+        </div>
+        <div class="loc-ctas">
+          <a href="tel:+237600000000" class="btn btn-red">Appeler maintenant</a>
+          <a href="#" class="btn btn-outline-yellow">Commander sur UberEats</a>
+        </div>
+      </div>
+
+      <div class="loc-map fade-up delay-2">
+        <img src="https://placehold.co/800x600/1a0505/cc0004?text=Maképé+Saint+Tropez+·+Douala" alt="Carte de localisation C Pizza à Maképé Saint Tropez Douala" loading="lazy" width="800" height="600">
+        <div class="loc-map-overlay" aria-hidden="true">
+          <div class="loc-pin">📍</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ CTA BAND ══ -->
+  <section id="cta-band" aria-label="Appel à l'action">
+    <div class="cta-band-inner">
+      <div class="fade-up">
+        <h2 class="cta-band-title">ENVIE D'UNE <span>PIZZA</span> ?</h2>
+        <p class="cta-band-sub">Commandez maintenant — livraison en 30 min à Douala.</p>
+      </div>
+      <div class="cta-band-right fade-up delay-1">
+        <a href="tel:+237600000000" class="btn btn-outline-white">
+          📞 +237 6XX XXX XXX
+        </a>
+        <a href="#menu" class="btn btn-outline-white" style="background:rgba(255,255,255,0.1);">
+          Voir le menu complet
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ FOOTER ══ -->
+  <footer id="footer" role="contentinfo">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brand-logo">
+            <img src="brand_assets/logo-new.jpeg" alt="Logo C Pizza" width="46" height="46">
+            <div>
+              <div class="footer-brand-name">C PIZZA</div>
+              <div style="font-size:0.6rem;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--yellow);margin-top:2px;">Maképé Saint Tropez</div>
+            </div>
+          </div>
+          <p class="footer-desc">
+            La pizzeria artisanale de Douala. Four à 450°C, pâte fermentée 72h, livraison express. L'art de la vraie pizza, à votre porte.
+          </p>
+          <div class="footer-socials">
+            <a href="#" class="social-link" aria-label="Facebook C Pizza">f</a>
+            <a href="#" class="social-link" aria-label="Instagram C Pizza">ig</a>
+            <a href="#" class="social-link" aria-label="TikTok C Pizza">tt</a>
+          </div>
+        </div>
+
+        <div>
+          <div class="footer-col-title">Menu</div>
+          <ul class="footer-links">
+            <li><a href="#menu">Pizzas Classiques</a></li>
+            <li><a href="#menu">Pizzas Spéciales</a></li>
+            <li><a href="#menu">Végétariennes</a></li>
+            <li><a href="#offres">Offres du moment</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-col-title">Informations</div>
+          <ul class="footer-links">
+            <li><a href="#story">Notre histoire</a></li>
+            <li><a href="#localisation">Nous trouver</a></li>
+            <li><a href="#avis">Avis clients</a></li>
+            <li><a href="#">Commander en ligne</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-col-title">Contact</div>
+          <ul class="footer-links">
+            <li><a href="tel:+237600000000">+237 6XX XXX XXX</a></li>
+            <li><a href="#">Maképé Saint Tropez</a></li>
+            <li><a href="#">Douala, Cameroun</a></li>
+            <li><a href="#">Lun – Dim : 11h – 23h30</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="footer-copy">© <span class="year"></span> C PIZZA — Tous droits réservés</p>
+        <div class="footer-legal">
+          <a href="#">Mentions légales</a>
+          <a href="#">Politique de confidentialité</a>
+          <a href="#">CGU</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── Year
+    document.querySelectorAll('.year').forEach(el => el.textContent = new Date().getFullYear());
+
+    // ── Nav scroll state
+    const nav = document.getElementById('main-nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    // ── Mobile burger
+    const burger = document.getElementById('burger-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    burger.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('open');
+      burger.setAttribute('aria-expanded', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    });
+    document.querySelectorAll('.mobile-link').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        burger.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      });
+    });
+
+    // ── Active nav link on scroll
+    const sections = document.querySelectorAll('section[id], div[id]');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    const observer_nav = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          navLinks.forEach(l => l.classList.remove('active'));
+          const active = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    sections.forEach(s => observer_nav.observe(s));
+
+    // ── Menu tabs
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabPanels = {
+      classiques: document.getElementById('tab-classiques'),
+      speciales:  document.getElementById('tab-speciales'),
+      vegetariennes: document.getElementById('tab-vegetariennes'),
+    };
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected','true');
+        const target = btn.dataset.tab;
+        Object.entries(tabPanels).forEach(([key, panel]) => {
+          panel.style.display = key === target ? 'grid' : 'none';
+        });
+        // Re-trigger fade-up on newly shown cards
+        document.querySelectorAll(`#tab-${target} .pizza-card`).forEach((card, i) => {
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(24px)';
+          setTimeout(() => {
+            card.style.transition = `opacity 0.5s ease ${i * 0.08}s, transform 0.5s ease ${i * 0.08}s`;
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+          }, 20);
+        });
+      });
+    });
+
+    // ── IntersectionObserver — fade-up
+    const fadeObserver = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          fadeObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.fade-up').forEach(el => fadeObserver.observe(el));
+  </script>
+</body>
+</html>
