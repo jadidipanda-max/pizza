@@ -1,4 +1,16 @@
 {
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "functions": {
+    "api/whatsapp.js": {
+      "memory": 1024,
+      "maxDuration": 30
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/whatsapp",
+      "dest": "/api/whatsapp.js"
+    }
+  ]
 }
