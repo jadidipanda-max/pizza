@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Commander — C Pizza | Commande en Ligne Douala</title>
+  <meta name="description" content="Commandez votre pizza C Pizza en ligne. Choisissez votre adresse, composez votre panier et finalisez sur WhatsApp. Livraison 30 min.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red: #AD0004; --red-hover: #8C0003; --yellow: #F3EC22; --yellow-dim: rgba(243,236,34,0.15);
+      --gray: #494949; --gray-light: #5a5a5a; --black: #494949; --black-deep: #3a3a3a;
+      --cream: #FAFAF5; --white: #FFFFFF; --text-light: #F5F0E8; --text-muted: #B0A09A;
+      --font-display: 'Bebas Neue', sans-serif; --font-script: 'Playfair Display', serif; --font-body: 'Montserrat', sans-serif;
+      --radius-btn: 50px; --radius-card: 14px;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-body); background: var(--cream); color: var(--gray); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+    button { cursor: pointer; font-family: var(--font-body); border: none; }
+    input, select, textarea { font-family: var(--font-body); }
+    :focus-visible { outline: 2px solid var(--yellow); outline-offset: 3px; border-radius: 4px; }
+
+    /* NAV */
+    #main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: var(--black); border-bottom: 1px solid rgba(255,255,255,0.06); transition: background 0.3s ease, box-shadow 0.3s ease; }
+    #main-nav.scrolled { background: rgba(16,0,0,0.96); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 2px 24px rgba(0,0,0,0.4); }
+    .nav-inner { max-width: 1320px; margin: 0 auto; padding: 0 32px; height: 72px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 24px; }
+    .nav-logo { justify-self: start; }
+    .nav-links { justify-self: center; }
+    .nav-right { justify-self: end; display: flex; align-items: center; gap: 14px; padding-left: 32px; border-left: 1px solid rgba(255,255,255,0.08); }
+    .nav-cta { position: relative; right: -28px; }
+    .nav-logo { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+    .nav-logo img { height: 46px; width: 46px; object-fit: contain; border-radius: 50%; }
+    .nav-logo-text { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.05em; color: var(--white); line-height: 1; }
+    .nav-logo-sub { font-family: var(--font-body); font-size: 0.6rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--yellow); margin-top: 2px; }
+    .nav-links { display: flex; align-items: center; gap: 36px; list-style: none; }
+    .nav-links a { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(245,240,232,0.75); position: relative; padding-bottom: 4px; transition: color 0.2s ease; }
+    .nav-links a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--yellow); transition: width 0.28s var(--ease); }
+    .nav-links a:hover { color: var(--white); }
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+    .nav-links a.active { color: var(--white); }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 15px 34px; border-radius: var(--radius-btn); font-family: var(--font-body); font-size: 0.82rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; transition: transform 0.28s var(--ease), box-shadow 0.28s var(--ease), background 0.22s ease; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-red { background: var(--red); color: var(--white); box-shadow: 0 4px 18px rgba(173,0,4,0.35); }
+    .btn-red:hover { background: var(--red-hover); box-shadow: 0 8px 30px rgba(173,0,4,0.50); }
+    .nav-cta { flex-shrink: 0; }
+    .nav-burger { display: none; flex-direction: column; gap: 5px; background: none; padding: 6px; }
+    .nav-burger span { display: block; width: 24px; height: 2px; background: var(--white); }
+    .mobile-menu { display: none; position: fixed; inset: 0; z-index: 99; background: var(--black); padding: 100px 32px 40px; flex-direction: column; gap: 32px; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-family: var(--font-display); font-size: 2.8rem; color: var(--white); letter-spacing: 0.06em; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 20px; }
+    .mobile-menu a:hover { color: var(--yellow); }
+
+    /* STEPS INDICATOR */
+    .steps-bar { background: var(--black); padding: 100px 32px 40px; }
+    .steps-inner { max-width: 500px; margin: 0 auto; display: flex; align-items: center; justify-content: center; gap: 0; }
+    .step-circle { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 1.1rem; color: var(--text-muted); border: 2px solid rgba(255,255,255,0.15); background: transparent; transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease; flex-shrink: 0; }
+    .step-circle.active { background: var(--red); border-color: var(--red); color: var(--white); }
+    .step-circle.done { background: #2d8a39; border-color: #2d8a39; color: var(--white); }
+    .step-line { flex: 1; height: 2px; background: rgba(255,255,255,0.1); margin: 0 8px; }
+    .step-line.active { background: var(--red); }
+    .step-labels { max-width: 500px; margin: 12px auto 0; display: flex; justify-content: space-between; }
+    .step-label { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); text-align: center; width: 33.33%; }
+    .step-label.active { color: var(--yellow); }
+
+    /* MAIN CONTENT */
+    .order-main { max-width: 800px; margin: 0 auto; padding: 48px 32px 100px; }
+    .step-panel { display: none; }
+    .step-panel.active { display: block; }
+
+    /* STEP 1: Location picker */
+    .step-title { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3.5rem); color: var(--black); letter-spacing: 0.02em; margin-bottom: 8px; }
+    .step-title span { color: var(--red); }
+    .step-sub { font-size: 0.9rem; color: var(--gray); margin-bottom: 36px; }
+    .loc-pick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .loc-pick-card { background: var(--white); border: 2px solid rgba(0,0,0,0.08); border-radius: var(--radius-card); padding: 28px 24px; cursor: pointer; transition: border-color 0.2s ease, transform 0.2s var(--ease), box-shadow 0.2s var(--ease); }
+    .loc-pick-card:hover { border-color: var(--red); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(173,0,4,0.1); }
+    .loc-pick-card.selected { border-color: var(--red); background: rgba(173,0,4,0.03); box-shadow: 0 0 0 3px rgba(173,0,4,0.15); }
+    .loc-pick-name { font-family: var(--font-display); font-size: 1.4rem; color: var(--black); letter-spacing: 0.04em; margin-bottom: 4px; }
+    .loc-pick-addr { font-size: 0.8rem; color: var(--gray); }
+    .loc-pick-badge { display: inline-block; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red); margin-top: 8px; }
+
+    /* STEP 2: Cart review */
+    .selected-loc-bar { display: flex; align-items: center; justify-content: space-between; background: var(--white); border-radius: 12px; padding: 16px 20px; margin-bottom: 32px; border: 1px solid rgba(0,0,0,0.06); }
+    .selected-loc-info { display: flex; align-items: center; gap: 12px; }
+    .selected-loc-pin { font-size: 1.2rem; }
+    .selected-loc-name { font-family: var(--font-display); font-size: 1.1rem; color: var(--black); letter-spacing: 0.02em; }
+    .selected-loc-change { font-size: 0.72rem; font-weight: 700; color: var(--red); letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; background: none; padding: 6px 12px; border-radius: 6px; transition: background 0.2s ease; }
+    .selected-loc-change:hover { background: rgba(173,0,4,0.06); }
+
+    .cart-list { margin-bottom: 32px; }
+    .cart-item { display: flex; align-items: flex-start; gap: 16px; padding: 20px; background: var(--white); border-radius: 12px; margin-bottom: 12px; border: 1px solid rgba(0,0,0,0.04); }
+    .cart-item-info { flex: 1; }
+    .cart-item-name { font-family: var(--font-display); font-size: 1.15rem; color: var(--black); letter-spacing: 0.02em; }
+    .cart-item-size { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
+    .cart-item-price { font-size: 0.85rem; font-weight: 700; color: var(--red); margin-top: 4px; }
+    .cart-item-controls { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+    .qty-btn { width: 32px; height: 32px; border-radius: 50%; background: var(--cream); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 700; color: var(--gray); transition: background 0.2s ease; }
+    .qty-btn:hover { background: rgba(173,0,4,0.08); }
+    .cart-item-qty { font-size: 0.95rem; font-weight: 700; color: var(--black); min-width: 24px; text-align: center; }
+    .cart-item-remove { font-size: 0.68rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; background: none; padding: 4px 10px; margin-left: auto; border-radius: 4px; transition: color 0.2s ease, background 0.2s ease; }
+    .cart-item-remove:hover { color: var(--red); background: rgba(173,0,4,0.06); }
+
+    .add-more-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border-radius: var(--radius-btn); background: var(--white); color: var(--red); font-family: var(--font-body); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border: 2px dashed rgba(173,0,4,0.35); margin-bottom: 32px; transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease; }
+    .add-more-btn:hover, .add-more-btn:focus-visible { background: rgba(173,0,4,0.04); border-color: var(--red); transform: translateY(-1px); }
+    .add-more-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .cart-item-subtotal { font-family: var(--font-display); font-size: 1.2rem; color: var(--black); white-space: nowrap; align-self: center; }
+
+    /* Delivery toggle */
+    .delivery-toggle { background: var(--white); border-radius: 12px; padding: 24px; margin-bottom: 24px; border: 1px solid rgba(0,0,0,0.04); }
+    .delivery-toggle-title { font-family: var(--font-display); font-size: 1.2rem; color: var(--black); margin-bottom: 14px; }
+    .delivery-options { display: flex; gap: 12px; margin-bottom: 16px; }
+    .delivery-opt { flex: 1; padding: 14px 16px; border-radius: 10px; border: 2px solid rgba(0,0,0,0.08); cursor: pointer; text-align: center; transition: border-color 0.2s ease, background 0.2s ease; }
+    .delivery-opt:hover { border-color: var(--red); }
+    .delivery-opt.selected { border-color: var(--red); background: rgba(173,0,4,0.03); }
+    .delivery-opt-label { font-size: 0.82rem; font-weight: 700; color: var(--black); }
+    .delivery-opt-price { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+    .delivery-address { display: none; }
+    .delivery-address.show { display: block; }
+    .delivery-address input { width: 100%; padding: 14px 16px; border-radius: 10px; border: 1.5px solid rgba(0,0,0,0.1); font-size: 0.9rem; color: var(--black); background: var(--cream); outline: none; transition: border-color 0.2s ease; }
+    .delivery-address input:focus { border-color: var(--red); }
+    .delivery-address input::placeholder { color: var(--text-muted); }
+    .delivery-fee-note { margin-top: 10px; font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; font-style: italic; }
+    .summary-note { margin-top: 12px; font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; font-style: italic; text-align: right; }
+
+    /* Client info */
+    .client-form { background: var(--white); border-radius: 12px; padding: 24px; margin-bottom: 24px; border: 1px solid rgba(0,0,0,0.04); }
+    .client-form-title { font-family: var(--font-display); font-size: 1.2rem; color: var(--black); margin-bottom: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray); }
+    .form-group input { padding: 14px 16px; border-radius: 10px; border: 1.5px solid rgba(0,0,0,0.1); font-size: 0.9rem; color: var(--black); background: var(--cream); outline: none; transition: border-color 0.2s ease; }
+    .form-group input:focus { border-color: var(--red); }
+
+    /* Order summary */
+    .order-summary { background: var(--white); border-radius: 12px; padding: 24px; margin-bottom: 24px; border: 1px solid rgba(0,0,0,0.04); }
+    .order-summary-title { font-family: var(--font-display); font-size: 1.2rem; color: var(--black); margin-bottom: 16px; }
+    .summary-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 0.88rem; color: var(--gray); }
+    .summary-row.total { border-top: 2px solid rgba(0,0,0,0.08); margin-top: 8px; padding-top: 16px; font-weight: 800; color: var(--black); font-size: 1.1rem; }
+    .summary-row.total .summary-val { font-family: var(--font-display); font-size: 1.8rem; color: var(--red); }
+
+    /* WhatsApp button */
+    .btn-whatsapp { width: 100%; padding: 20px; border-radius: var(--radius-btn); background: #25D366; color: var(--white); font-size: 1rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; text-align: center; display: flex; align-items: center; justify-content: center; gap: 12px; box-shadow: 0 6px 24px rgba(37,211,102,0.35); transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease; }
+    .btn-whatsapp:hover { background: #1fba59; transform: translateY(-2px); box-shadow: 0 10px 36px rgba(37,211,102,0.45); }
+    .btn-whatsapp svg { width: 24px; height: 24px; fill: var(--white); }
+
+    /* Empty state */
+    .empty-cart { text-align: center; padding: 60px 20px; }
+    .empty-icon { font-size: 4rem; margin-bottom: 16px; }
+    .empty-text { font-size: 1rem; color: var(--gray); margin-bottom: 24px; }
+
+    /* Error msg */
+    .form-error { font-size: 0.72rem; color: var(--red); font-weight: 600; margin-top: 4px; display: none; }
+    .form-error.show { display: block; }
+
+    /* FOOTER */
+    #footer { background: var(--black-deep); padding: 64px 32px 32px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .footer-inner { max-width: 1320px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 48px; padding-bottom: 48px; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 32px; }
+    .footer-brand-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .footer-brand-logo img { height: 80px; width: 80px; object-fit: contain; border-radius: 50%; }
+    .footer-brand-name { font-family: var(--font-display); font-size: 1.5rem; color: var(--white); }
+    .footer-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 24px; }
+    .footer-socials { display: flex; gap: 10px; }
+    .social-link { width: 36px; height: 36px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.8rem; transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease; }
+    .social-link:hover { border-color: var(--yellow); color: var(--yellow); background: var(--yellow-dim); }
+    .footer-col-title { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--white); margin-bottom: 20px; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: 0.82rem; color: var(--text-muted); transition: color 0.2s ease; }
+    .footer-links a:hover { color: var(--white); }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .footer-copy { font-size: 0.75rem; color: rgba(255,255,255,0.25); }
+    .footer-legal { display: flex; gap: 24px; }
+    .footer-legal a { font-size: 0.72rem; color: rgba(255,255,255,0.25); transition: color 0.2s ease; }
+    .footer-legal a:hover { color: var(--text-muted); }
+
+    @media (max-width: 768px) {
+      .nav-inner { grid-template-columns: 1fr auto; }
+      .nav-links, .nav-cta { display: none; } .nav-burger { display: flex; }
+      .nav-right { border-left: none; padding-left: 0; }
+      .loc-pick-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+      .order-main { padding: 32px 16px 80px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="main-nav" role="navigation" aria-label="Navigation principale">
+    <div class="nav-inner">
+      <a href="mockup-popeyes.html" class="nav-logo" aria-label="C Pizza — Accueil">
+        <img src="brand_assets/logo-new.jpeg" alt="Logo C Pizza" width="46" height="46">
+        <div><div class="nav-logo-text">C PIZZA</div></div>
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="offres.html">Offres</a></li>
+        <li><a href="nous-trouver.html">Nous trouver</a></li>
+      </ul>
+      <div class="nav-right">
+        <a href="commander.html" class="btn btn-red nav-cta active">Commander →</a>
+        <button class="nav-burger" id="burger-btn" aria-label="Ouvrir le menu" aria-expanded="false"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Menu mobile">
+    <a href="menu.html">Menu</a><a href="offres.html">Offres</a><a href="nous-trouver.html">Nous trouver</a>
+    <a href="commander.html" class="btn btn-red" style="width:100%;justify-content:center;border-radius:50px;margin-top:16px;">Commander</a>
+  </div>
+
+  <!-- STEPS BAR -->
+  <div class="steps-bar">
+    <div class="steps-inner">
+      <div class="step-circle active" id="sc1">1</div>
+      <div class="step-line" id="sl1"></div>
+      <div class="step-circle" id="sc2">2</div>
+      <div class="step-line" id="sl2"></div>
+      <div class="step-circle" id="sc3">3</div>
+    </div>
+    <div class="step-labels">
+      <span class="step-label active" id="slbl1">Adresse</span>
+      <span class="step-label" id="slbl2">Panier</span>
+      <span class="step-label" id="slbl3">WhatsApp</span>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="order-main">
+
+    <!-- STEP 1: Location -->
+    <div class="step-panel active" id="step1">
+      <h1 class="step-title">OU VOULEZ-VOUS <span>COMMANDER</span> ?</h1>
+      <p class="step-sub">Choisissez le C Pizza le plus proche de chez vous.</p>
+      <div class="loc-pick-grid">
+        <div class="loc-pick-card" data-loc="yassa" tabindex="0" role="button" aria-label="Choisir C Pizza Yassa">
+          <div class="loc-pick-name">C PIZZA YASSA</div>
+          <div class="loc-pick-addr">Quartier Yassa, Douala</div>
+          <div class="loc-pick-badge">Adresse historique</div>
+        </div>
+        <div class="loc-pick-card" data-loc="essos" tabindex="0" role="button" aria-label="Choisir C Pizza Essos">
+          <div class="loc-pick-name">C PIZZA ESSOS</div>
+          <div class="loc-pick-addr">Quartier Essos, Douala</div>
+        </div>
+        <div class="loc-pick-card" data-loc="odza" tabindex="0" role="button" aria-label="Choisir C Pizza Odza">
+          <div class="loc-pick-name">C PIZZA ODZA</div>
+          <div class="loc-pick-addr">Quartier Odza, Douala</div>
+        </div>
+        <div class="loc-pick-card" data-loc="bonamoussadi" tabindex="0" role="button" aria-label="Choisir C Pizza Bonamoussadi">
+          <div class="loc-pick-name">C PIZZA BONAMOUSSADI</div>
+          <div class="loc-pick-addr">Quartier Bonamoussadi, Douala</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: Cart -->
+    <div class="step-panel" id="step2">
+      <h2 class="step-title">VOTRE <span>COMMANDE</span></h2>
+      <p class="step-sub">Verifiez votre panier et completez vos informations.</p>
+
+      <div class="selected-loc-bar" id="loc-bar">
+        <div class="selected-loc-info">
+          <span class="selected-loc-pin">📍</span>
+          <span class="selected-loc-name" id="loc-bar-name"></span>
+        </div>
+        <button class="selected-loc-change" id="change-loc">Changer</button>
+      </div>
+
+      <div id="cart-list-container"></div>
+
+      <!-- Ajouter un article (retour au menu, l'enseigne reste memorisee) -->
+      <a href="menu.html" class="add-more-btn" id="add-more-btn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        Ajouter un article
+      </a>
+
+      <!-- Delivery -->
+      <div class="delivery-toggle">
+        <div class="delivery-toggle-title">MODE DE RETRAIT</div>
+        <div class="delivery-options">
+          <div class="delivery-opt selected" data-mode="livraison" tabindex="0" role="button">
+            <div class="delivery-opt-label">Livraison</div>
+          </div>
+          <div class="delivery-opt" data-mode="surplace" tabindex="0" role="button">
+            <div class="delivery-opt-label">Sur place</div>
+            <div class="delivery-opt-price">Gratuit</div>
+          </div>
+        </div>
+        <div class="delivery-address show" id="delivery-addr-wrap">
+          <input type="text" id="delivery-addr" placeholder="Votre adresse ou quartier de livraison...">
+          <p class="delivery-fee-note">Le prix de la livraison vous sera communiqué sur WhatsApp selon votre adresse.</p>
+        </div>
+      </div>
+
+      <!-- Client info -->
+      <div class="client-form">
+        <div class="client-form-title">VOS INFORMATIONS</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="client-name">Nom *</label>
+            <input type="text" id="client-name" placeholder="Votre nom" required>
+            <span class="form-error" id="err-name">Veuillez entrer votre nom</span>
+          </div>
+          <div class="form-group">
+            <label for="client-phone">Telephone *</label>
+            <input type="tel" id="client-phone" placeholder="+237 6 20 60 92 97" required>
+            <span class="form-error" id="err-phone">Veuillez entrer votre numero</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <div class="order-summary">
+        <div class="order-summary-title">RECAPITULATIF</div>
+        <div class="summary-row"><span>Sous-total</span><span class="summary-val" id="sum-subtotal">0 FCFA</span></div>
+        <div class="summary-row" id="sum-delivery-row"><span>Livraison</span><span class="summary-val" id="sum-delivery">À confirmer</span></div>
+        <div class="summary-row total"><span>Total</span><span class="summary-val" id="sum-total">0 FCFA</span></div>
+        <p class="summary-note" id="sum-note">Le prix de la livraison sera ajouté sur WhatsApp.</p>
+      </div>
+
+      <!-- WhatsApp CTA -->
+      <button class="btn-whatsapp" id="btn-whatsapp" aria-label="Confirmer la commande sur WhatsApp">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Confirmer sur WhatsApp
+      </button>
+    </div>
+
+    <!-- STEP 3: Confirmation -->
+    <div class="step-panel" id="step3">
+      <div style="text-align:center;padding:60px 0;">
+        <div style="font-size:4rem;margin-bottom:20px;">✅</div>
+        <h2 class="step-title" style="text-align:center;">COMMANDE <span>ENVOYEE</span> !</h2>
+        <p class="step-sub" style="text-align:center;max-width:400px;margin:0 auto 32px;">Vous avez ete redirige vers WhatsApp pour finaliser votre commande avec notre equipe.</p>
+        <a href="menu.html" class="btn btn-red" style="margin:0 auto;">Retour au menu</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer id="footer" role="contentinfo">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brand-logo"><img src="brand_assets/logo-new.jpeg" alt="Logo C Pizza" width="80" height="80"><div><div class="footer-brand-name">C PIZZA</div></div></div>
+        </div>
+        <div><div class="footer-col-title">Menu</div><ul class="footer-links"><li><a href="menu.html">Pizzas Classiques</a></li><li><a href="menu.html">Pizzas Speciales</a></li><li><a href="menu.html">Vegetariennes</a></li><li><a href="offres.html">Offres du moment</a></li></ul></div>
+        <div><div class="footer-col-title">Informations</div><ul class="footer-links"><li><a href="nous-trouver.html">Nous trouver</a></li><li><a href="commander.html">Commander en ligne</a></li></ul></div>
+        <div><div class="footer-col-title">Contact</div><ul class="footer-links"><li><a href="tel:+237620609297">+237 6 20 60 92 97</a></li><li>Cameroun</li><li>Lun – Dim : 11h – 22h30</li></ul></div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy">© <span class="year"></span> C PIZZA — Tous droits reserves</p>
+        <div class="footer-legal"><a href="#">Mentions legales</a><a href="#">Politique de confidentialite</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.year').forEach(el => el.textContent = new Date().getFullYear());
+    const nav = document.getElementById('main-nav');
+    window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 60); }, { passive: true });
+    const burger = document.getElementById('burger-btn');
+    const mm = document.getElementById('mobile-menu');
+    burger.addEventListener('click', () => { const o = mm.classList.toggle('open'); burger.setAttribute('aria-expanded', o); document.body.style.overflow = o ? 'hidden' : ''; });
+
+    // ── Format price
+    function fmt(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' FCFA'; }
+
+    // ── State
+    let cart = JSON.parse(localStorage.getItem('cpizza_cart') || '[]');
+    let selectedLoc = null;
+    let deliveryMode = 'livraison';
+
+    const LOC_NAMES = {
+      yassa: 'C Pizza Yassa — Quartier Yassa',
+      essos: 'C Pizza Essos — Quartier Essos',
+      odza: 'C Pizza Odza — Quartier Odza',
+      bonamoussadi: 'C Pizza Bonamoussadi — Quartier Bonamoussadi'
+    };
+
+    // ── Step management
+    function goStep(n) {
+      document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('step' + n).classList.add('active');
+      // Update indicators
+      for (let i = 1; i <= 3; i++) {
+        const c = document.getElementById('sc' + i);
+        const l = document.getElementById('slbl' + i);
+        c.classList.remove('active', 'done');
+        l.classList.remove('active');
+        if (i < n) c.classList.add('done');
+        if (i === n) { c.classList.add('active'); l.classList.add('active'); }
+      }
+      for (let i = 1; i <= 2; i++) {
+        document.getElementById('sl' + i).classList.toggle('active', i < n);
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ── URL param ?location=
+    const urlParams = new URLSearchParams(window.location.search);
+    const locParam = urlParams.get('location');
+    if (locParam && LOC_NAMES[locParam]) {
+      selectedLoc = locParam;
+      if (cart.length > 0) {
+        goStep(2);
+        renderStep2();
+      } else {
+        // Select the card visually, then user can proceed
+        highlightLoc(locParam);
+      }
+    }
+
+    function highlightLoc(loc) {
+      document.querySelectorAll('.loc-pick-card').forEach(c => c.classList.remove('selected'));
+      const card = document.querySelector(`.loc-pick-card[data-loc="${loc}"]`);
+      if (card) card.classList.add('selected');
+    }
+
+    // ── Step 1: Location selection
+    document.querySelectorAll('.loc-pick-card').forEach(card => {
+      card.addEventListener('click', () => {
+        selectedLoc = card.dataset.loc;
+        highlightLoc(selectedLoc);
+        // Persist le choix d'enseigne pour toute la session (jusqu'a order success ou changement explicite)
+        localStorage.setItem('cpizza_selected_loc', selectedLoc);
+        if (cart.length === 0) {
+          // Panier vide : on envoie l'utilisateur composer son panier
+          window.location.href = 'menu.html';
+        } else {
+          goStep(2);
+          renderStep2();
+        }
+      });
+      card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.click(); } });
+    });
+
+    // ── Step 2: Cart rendering
+    function renderStep2() {
+      document.getElementById('loc-bar-name').textContent = LOC_NAMES[selectedLoc] || selectedLoc;
+      const container = document.getElementById('cart-list-container');
+
+      if (cart.length === 0) {
+        container.innerHTML = `<div class="empty-cart"><div class="empty-icon">🍕</div><p class="empty-text">Votre panier est vide</p><a href="menu.html" class="btn btn-red" style="font-size:0.8rem;padding:12px 28px;">Voir le menu</a></div>`;
+        document.getElementById('add-more-btn').style.display = 'none';
+        document.querySelector('.delivery-toggle').style.display = 'none';
+        document.querySelector('.client-form').style.display = 'none';
+        document.querySelector('.order-summary').style.display = 'none';
+        document.getElementById('btn-whatsapp').style.display = 'none';
+        return;
+      }
+
+      document.getElementById('add-more-btn').style.display = '';
+      document.querySelector('.delivery-toggle').style.display = '';
+      document.querySelector('.client-form').style.display = '';
+      document.querySelector('.order-summary').style.display = '';
+      document.getElementById('btn-whatsapp').style.display = '';
+
+      container.innerHTML = '<div class="cart-list">' + cart.map((item, i) => {
+        const meta = [];
+        if (item.variant) meta.push(item.variant);
+        if (item.size && item.size !== '-') meta.push(item.size);
+        const metaStr = meta.join(' · ');
+        return `<div class="cart-item">
+          <div class="cart-item-info">
+            <div class="cart-item-name">${item.name}</div>
+            ${metaStr ? `<div class="cart-item-size">${metaStr}</div>` : ''}
+            <div class="cart-item-price">${fmt(item.price)} × ${item.quantity}</div>
+            <div class="cart-item-controls">
+              <button class="qty-btn" onclick="changeQty(${i},-1)" aria-label="Reduire">−</button>
+              <span class="cart-item-qty">${item.quantity}</span>
+              <button class="qty-btn" onclick="changeQty(${i},1)" aria-label="Augmenter">+</button>
+              <button class="cart-item-remove" onclick="removeItem(${i})">Supprimer</button>
+            </div>
+          </div>
+          <div class="cart-item-subtotal">${fmt(item.price * item.quantity)}</div>
+        </div>`;
+      }).join('') + '</div>';
+
+      updateSummary();
+    }
+
+    function changeQty(i, d) {
+      cart[i].quantity += d;
+      if (cart[i].quantity <= 0) cart.splice(i, 1);
+      localStorage.setItem('cpizza_cart', JSON.stringify(cart));
+      renderStep2();
+    }
+    function removeItem(i) {
+      cart.splice(i, 1);
+      localStorage.setItem('cpizza_cart', JSON.stringify(cart));
+      renderStep2();
+    }
+
+    function getSubtotal() { return cart.reduce((s, i) => s + i.price * i.quantity, 0); }
+
+    function updateSummary() {
+      const sub = getSubtotal();
+      const isDelivery = deliveryMode === 'livraison';
+      document.getElementById('sum-subtotal').textContent = fmt(sub);
+      document.getElementById('sum-delivery').textContent = isDelivery ? 'À confirmer' : 'Gratuit';
+      document.getElementById('sum-total').textContent = fmt(sub);
+      const noteEl = document.getElementById('sum-note');
+      if (noteEl) noteEl.style.display = isDelivery ? '' : 'none';
+    }
+
+    // ── Change location (clic explicite : on efface le choix persiste)
+    document.getElementById('change-loc').addEventListener('click', () => {
+      localStorage.removeItem('cpizza_selected_loc');
+      selectedLoc = null;
+      document.querySelectorAll('.loc-pick-card').forEach(c => c.classList.remove('selected'));
+      goStep(1);
+    });
+
+    // ── Delivery mode
+    document.querySelectorAll('.delivery-opt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        document.querySelectorAll('.delivery-opt').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        deliveryMode = opt.dataset.mode;
+        document.getElementById('delivery-addr-wrap').classList.toggle('show', deliveryMode === 'livraison');
+        updateSummary();
+      });
+    });
+
+    // ── WhatsApp submit
+    document.getElementById('btn-whatsapp').addEventListener('click', () => {
+      const name = document.getElementById('client-name').value.trim();
+      const phone = document.getElementById('client-phone').value.trim();
+      let valid = true;
+
+      document.getElementById('err-name').classList.toggle('show', !name);
+      document.getElementById('err-phone').classList.toggle('show', !phone);
+      if (!name || !phone) return;
+
+      if (cart.length === 0) return;
+
+      const addr = document.getElementById('delivery-addr').value.trim();
+      const sub = getSubtotal();
+      const isDelivery = deliveryMode === 'livraison';
+
+      let msg = `🍕 *NOUVELLE COMMANDE C PIZZA*\n\n`;
+      msg += `📍 *Adresse :* ${LOC_NAMES[selectedLoc]}\n`;
+      msg += `👤 *Client :* ${name}\n`;
+      msg += `📞 *Tel :* ${phone}\n\n`;
+      msg += `📋 *Commande :*\n`;
+      cart.forEach(item => {
+        const parts = [];
+        if (item.variant) parts.push(item.variant);
+        if (item.size && item.size !== '-') parts.push(item.size);
+        const meta = parts.length ? ` (${parts.join(' · ')})` : '';
+        msg += `  • ${item.name}${meta} × ${item.quantity} — ${fmt(item.price * item.quantity)}\n`;
+      });
+      msg += `\n`;
+      msg += `🚗 *Mode :* ${isDelivery ? 'Livraison' : 'Sur place'}\n`;
+      if (isDelivery && addr) {
+        msg += `📮 *Adresse livraison :* ${addr}\n`;
+      }
+      msg += `\n`;
+      msg += `💰 Sous-total : ${fmt(sub)}\n`;
+      if (isDelivery) msg += `🛵 Livraison : à confirmer selon adresse\n`;
+      msg += `✅ *TOTAL (hors livraison) : ${fmt(sub)}*\n`;
+      msg += `\nMerci ! 🙏`;
+
+      const encoded = encodeURIComponent(msg);
+      window.open(`https://wa.me/237620609297?text=${encoded}`, '_blank');
+
+      // Clear cart + enseigne (commande envoyee, on repart de zero la prochaine fois)
+      localStorage.removeItem('cpizza_cart');
+      localStorage.removeItem('cpizza_selected_loc');
+      cart = [];
+      goStep(3);
+    });
+
+    // ── Reprise de session : enseigne deja choisie precedemment
+    // (NE PAS supprimer le localStorage ici, on garde le choix tant que l'utilisateur
+    //  n'a pas fini sa commande ou cliqué sur "Changer")
+    const savedLoc = localStorage.getItem('cpizza_selected_loc');
+    if (savedLoc && LOC_NAMES[savedLoc] && !locParam) {
+      selectedLoc = savedLoc;
+      if (cart.length > 0) {
+        goStep(2);
+        renderStep2();
+      } else {
+        highlightLoc(savedLoc);
+      }
+    }
+  </script>
+</body>
+</html>
