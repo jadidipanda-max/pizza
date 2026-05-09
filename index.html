@@ -1461,11 +1461,65 @@
 
     @media (max-width: 480px) {
       .pizza-grid { grid-template-columns: 1fr; }
-      .hero-ctas { flex-direction: column; align-items: flex-start; }
+      .hero-ctas { flex-direction: column; align-items: stretch; }
       .btn { width: 100%; justify-content: center; }
       .loc-ctas { flex-direction: column; }
       .loc-ctas .btn { width: 100%; justify-content: center; }
-      #menu, #offres, #story, #avis, #localisation { padding: 72px 20px; }
+      #menu, #offres, #story, #avis, #localisation { padding: 60px 20px; }
+    }
+
+    @media (max-width: 430px) {
+      /* Hero */
+      .hero-content { padding: 95px 20px 56px; }
+      .hero-title { font-size: clamp(2.8rem, 13vw, 4rem); }
+      .hero-badge { font-size: 0.62rem; padding: 6px 12px; }
+
+      /* Trust bar — tighter 2×2 */
+      .trust-inner { padding: 0; }
+      .trust-item { padding: 16px 8px; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+      .trust-icon { font-size: 1.2rem; }
+      .trust-num { font-size: 1.6rem; }
+      .trust-label { font-size: 0.58rem; letter-spacing: 0.08em; }
+
+      /* Quick links */
+      #quick-links { padding: 56px 20px; }
+      .ql-header { margin-bottom: 36px; }
+      .ql-title { font-size: clamp(2rem, 10vw, 3rem); }
+      .ql-card { padding: 28px 22px; }
+
+      /* Menu section */
+      #menu { padding: 56px 16px; }
+      .menu-title { font-size: clamp(2.4rem, 12vw, 3.5rem); }
+      .menu-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding-bottom: 4px;
+        gap: 6px;
+      }
+      .menu-tabs::-webkit-scrollbar { display: none; }
+      .tab-btn { flex-shrink: 0; padding: 9px 18px; font-size: 0.7rem; }
+
+      /* Offres */
+      .offre-card-title { font-size: clamp(1.4rem, 8vw, 2rem); }
+
+      /* CTA band */
+      #cta-band { padding: 48px 20px; }
+      .cta-band-title { font-size: clamp(1.5rem, 9vw, 2.2rem); }
+      .cta-phone { font-size: clamp(1.6rem, 9vw, 2.2rem); }
+
+      /* Avis (reviews) */
+      .avis-card { padding: 24px 20px; }
+
+      /* Nav */
+      .nav-inner { padding: 0 16px; height: 64px; }
+      .nav-logo img { height: 38px; width: 38px; }
+      .nav-logo-text { font-size: 1.25rem; }
+
+      /* Footer */
+      #footer { padding: 48px 20px 24px; }
+      .footer-bottom { font-size: 0.68rem; }
     }
 
     /* ════════════════════════════════════
