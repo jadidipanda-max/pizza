@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nous Trouver — C Pizza | 4 Adresses à Douala et Yaoundé</title>
+  <meta name="description" content="Retrouvez C Pizza à Yassa et Bonamoussadi (Douala), Essos et Odza (Yaoundé). Horaires, adresses, zones de livraison. Commandez votre pizza préférée.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <style>
+    :root {
+      --red: #AD0004; --red-hover: #8C0003; --yellow: #F3EC22; --yellow-dim: rgba(243,236,34,0.15);
+      --gray: #494949; --gray-light: #5a5a5a; --black: #494949; --black-deep: #3a3a3a;
+      --cream: #FAFAF5; --white: #FFFFFF; --text-light: #F5F0E8; --text-muted: #B0A09A;
+      --font-display: 'Bebas Neue', sans-serif; --font-script: 'Playfair Display', serif; --font-body: 'Montserrat', sans-serif;
+      --radius-btn: 50px; --radius-card: 14px;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-body); background: var(--black); color: var(--text-light); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+    button { cursor: pointer; font-family: var(--font-body); border: none; }
+    :focus-visible { outline: 2px solid var(--yellow); outline-offset: 3px; border-radius: 4px; }
+    .fade-up { opacity: 0; transform: translateY(32px); transition: opacity 0.72s var(--ease), transform 0.72s var(--ease); }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+    .fade-up.delay-1 { transition-delay: 0.1s; }
+    .fade-up.delay-2 { transition-delay: 0.2s; }
+    .fade-up.delay-3 { transition-delay: 0.3s; }
+    .fade-up.delay-4 { transition-delay: 0.4s; }
+
+    /* NAV */
+    #main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: var(--black); border-bottom: 1px solid rgba(255,255,255,0.06); transition: background 0.3s ease, box-shadow 0.3s ease; }
+    #main-nav.scrolled { background: rgba(16,0,0,0.96); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: 0 2px 24px rgba(0,0,0,0.4); }
+    .nav-inner { max-width: 1320px; margin: 0 auto; padding: 0 32px; height: 72px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 24px; }
+    .nav-logo { justify-self: start; }
+    .nav-links { justify-self: center; }
+    .nav-right { justify-self: end; display: flex; align-items: center; gap: 14px; padding-left: 32px; border-left: 1px solid rgba(255,255,255,0.08); }
+    .nav-cta { position: relative; right: -28px; }
+    .nav-logo { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+    .nav-logo img { height: 46px; width: 46px; object-fit: contain; border-radius: 50%; }
+    .nav-logo-text { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.05em; color: var(--white); line-height: 1; }
+    .nav-logo-sub { font-family: var(--font-body); font-size: 0.6rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--yellow); margin-top: 2px; }
+    .nav-links { display: flex; align-items: center; gap: 36px; list-style: none; }
+    .nav-links a { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(245,240,232,0.75); position: relative; padding-bottom: 4px; transition: color 0.2s ease; }
+    .nav-links a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--yellow); transition: width 0.28s var(--ease); }
+    .nav-links a:hover { color: var(--white); }
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+    .nav-links a.active { color: var(--white); }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 15px 34px; border-radius: var(--radius-btn); font-family: var(--font-body); font-size: 0.82rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; transition: transform 0.28s var(--ease), box-shadow 0.28s var(--ease), background 0.22s ease; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-red { background: var(--red); color: var(--white); box-shadow: 0 4px 18px rgba(173,0,4,0.35); }
+    .btn-red:hover { background: var(--red-hover); box-shadow: 0 8px 30px rgba(173,0,4,0.50); }
+    .btn-outline-white { background: transparent; color: var(--white); border: 2px solid rgba(255,255,255,0.5); }
+    .btn-outline-white:hover { border-color: var(--white); background: rgba(255,255,255,0.06); }
+    .btn-outline-yellow { background: transparent; color: var(--yellow); border: 2px solid var(--yellow); }
+    .btn-outline-yellow:hover { background: var(--yellow-dim); box-shadow: 0 4px 20px rgba(243,236,34,0.18); }
+    .nav-cta { flex-shrink: 0; }
+    .nav-burger { display: none; flex-direction: column; gap: 5px; background: none; padding: 6px; }
+    .nav-burger span { display: block; width: 24px; height: 2px; background: var(--white); }
+    .mobile-menu { display: none; position: fixed; inset: 0; z-index: 99; background: var(--black); padding: 100px 32px 40px; flex-direction: column; gap: 32px; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-family: var(--font-display); font-size: 2.8rem; color: var(--white); letter-spacing: 0.06em; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 20px; }
+    .mobile-menu a:hover { color: var(--yellow); }
+    .section-label { display: inline-flex; align-items: center; gap: 10px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--yellow); margin-bottom: 16px; }
+    .section-label::before { content: ''; width: 28px; height: 2px; background: var(--yellow); }
+
+    /* HERO */
+    #hero { background: var(--black-deep); padding: 140px 32px 60px; text-align: center; }
+    .hero-inner { max-width: 800px; margin: 0 auto; }
+    .hero-title { font-family: var(--font-display); font-size: clamp(4rem, 10vw, 8rem); color: var(--white); line-height: 0.92; letter-spacing: 0.02em; margin-bottom: 16px; }
+    .hero-title span { color: var(--yellow); }
+    .hero-sub { font-size: 1rem; color: var(--text-muted); line-height: 1.7; }
+
+    /* LOCATIONS */
+    .loc-section { padding: 80px 32px 100px; }
+    .loc-inner { max-width: 1320px; margin: 0 auto; }
+    .loc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+    .loc-card { position: relative; background: var(--black-deep); border: 1px solid rgba(243,236,34,0.1); border-radius: var(--radius-card); padding: 36px 30px 30px; overflow: hidden; transition: transform 0.4s var(--ease), border-color 0.3s ease, box-shadow 0.4s var(--ease); display: flex; flex-direction: column; }
+    .loc-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 50%, rgba(173,0,4,0.10) 100%); opacity: 0; transition: opacity 0.4s var(--ease); pointer-events: none; }
+    .loc-card:hover { transform: translateY(-6px); border-color: var(--yellow); box-shadow: 0 20px 50px rgba(173,0,4,0.22), 0 4px 12px rgba(0,0,0,0.3); }
+    .loc-card:hover::before { opacity: 1; }
+    .loc-card-num { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.22em; color: var(--red); margin-bottom: 10px; position: relative; z-index: 1; }
+    .loc-card-name { font-family: var(--font-display); font-size: 2rem; letter-spacing: 0.06em; color: var(--cream); line-height: 1; margin-bottom: 8px; position: relative; z-index: 1; }
+    .loc-card-desc { font-size: 0.78rem; color: var(--text-muted); font-style: italic; margin-bottom: 18px; position: relative; z-index: 1; }
+    .loc-card-addr { font-size: 0.92rem; font-weight: 500; color: var(--text-light); line-height: 1.55; margin-bottom: 18px; position: relative; z-index: 1; }
+    .loc-card-meta { display: flex; flex-direction: column; gap: 8px; margin-bottom: 22px; padding-bottom: 22px; border-bottom: 1px solid rgba(245,240,232,0.1); position: relative; z-index: 1; }
+    .loc-card-line { display: flex; align-items: center; gap: 10px; font-size: 0.82rem; color: var(--text-muted); }
+    .loc-card-line svg { width: 15px; height: 15px; stroke: var(--yellow); fill: none; stroke-width: 1.8; flex-shrink: 0; }
+    .loc-card-ctas { display: flex; gap: 8px; margin-top: auto; position: relative; z-index: 1; }
+    .loc-card-cta { flex: 1; display: inline-flex; align-items: center; justify-content: center; padding: 11px 12px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; background: var(--red); color: var(--white); transition: background 0.3s ease, transform 0.3s var(--ease); border: 1.5px solid var(--red); }
+    .loc-card-cta:hover { background: var(--red-hover); border-color: var(--red-hover); transform: translateY(-2px); }
+    .loc-card-cta-outline { background: transparent; color: var(--yellow); border: 1.5px solid rgba(243,236,34,0.35); }
+    .loc-card-cta-outline:hover { background: var(--yellow); color: var(--black); border-color: var(--yellow); }
+
+    /* DELIVERY ZONES */
+    .delivery-section { background: var(--cream); padding: 100px 32px; color: var(--gray); }
+    .delivery-inner { max-width: 900px; margin: 0 auto; text-align: center; }
+    .delivery-title { font-family: var(--font-display); font-size: clamp(2.5rem, 5vw, 4.5rem); color: var(--black); letter-spacing: 0.02em; margin-bottom: 16px; }
+    .delivery-title span { color: var(--red); }
+    .delivery-sub { font-size: 0.95rem; color: var(--gray); margin-bottom: 48px; }
+    .delivery-map { width: 100%; border-radius: 16px; overflow: hidden; margin-bottom: 40px; box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+    .delivery-map img { width: 100%; }
+    .zone-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 32px; }
+    .zone-tag { padding: 8px 20px; border-radius: 50px; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; background: var(--white); color: var(--black); border: 1.5px solid rgba(0,0,0,0.1); transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease; }
+    .zone-tag:hover { border-color: var(--red); color: var(--red); }
+    .delivery-badge { display: inline-flex; align-items: center; gap: 10px; background: var(--red); color: var(--white); padding: 12px 28px; border-radius: 50px; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 20px; }
+    .delivery-info { font-size: 0.82rem; color: var(--gray); }
+    .delivery-fees { margin: 56px 0 32px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .delivery-fee-pill { display: inline-flex; align-items: center; gap: 12px; background: var(--red); color: var(--white); padding: 14px 32px; border-radius: 50px; font-family: var(--font-display); font-size: 1.4rem; letter-spacing: 0.06em; box-shadow: 0 8px 28px rgba(173,0,4,0.32), 0 2px 8px rgba(0,0,0,0.12); }
+    .delivery-fee-pill::before { content: '🛵'; font-size: 1.2rem; filter: grayscale(0.2); }
+    .delivery-fee-note { font-size: 0.82rem; color: var(--gray); font-style: italic; letter-spacing: 0.02em; }
+    #delivery-map { width: 100%; height: 480px; background: var(--black-deep); border: 1px solid rgba(243,236,34,0.15); border-radius: 16px; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,0.18); will-change: transform; contain: layout paint; }
+    #delivery-map.fade-up { transition: opacity 0.72s var(--ease), transform 0.72s var(--ease); }
+    .leaflet-container { will-change: transform; }
+    .leaflet-control-attribution { display: none !important; }
+    .cpizza-pin-wrap { background: transparent; border: none; }
+    .cpizza-pin { background: var(--red); color: var(--white); width: 36px; height: 36px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(173,0,4,0.55), 0 0 0 3px rgba(173,0,4,0.18); border: 2px solid var(--white); transition: transform 0.25s var(--ease); }
+    .cpizza-pin:hover { transform: rotate(-45deg) scale(1.12); }
+    .cpizza-pin span { display: inline-block; transform: rotate(45deg); font-family: var(--font-display); font-size: 0.95rem; letter-spacing: 0.04em; line-height: 1; }
+    .leaflet-popup-content-wrapper { background: var(--black-deep); color: var(--text-light); border-radius: 10px; border: 1px solid rgba(243,236,34,0.22); box-shadow: 0 12px 32px rgba(0,0,0,0.45); }
+    .leaflet-popup-tip { background: var(--black-deep); border: 1px solid rgba(243,236,34,0.22); }
+    .leaflet-popup-content { font-family: var(--font-body); font-size: 0.82rem; line-height: 1.5; margin: 12px 14px; }
+    .leaflet-popup-content strong { font-family: var(--font-display); font-size: 1.05rem; letter-spacing: 0.06em; color: var(--cream); }
+    .leaflet-popup-content small { color: var(--text-muted); display: block; margin: 2px 0 6px; }
+    .leaflet-popup-content a { color: var(--yellow); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.72rem; border-bottom: 1px solid rgba(243,236,34,0.4); padding-bottom: 1px; }
+    .leaflet-popup-content a:hover { color: var(--white); border-bottom-color: var(--white); }
+    .leaflet-popup-close-button { color: var(--text-muted) !important; }
+    .leaflet-control-attribution { background: rgba(58,58,58,0.85) !important; color: var(--text-muted) !important; font-size: 0.65rem !important; }
+    .leaflet-control-attribution a { color: var(--yellow) !important; }
+    .leaflet-control-zoom a { background: var(--black-deep) !important; color: var(--cream) !important; border: 1px solid rgba(243,236,34,0.18) !important; }
+    .leaflet-control-zoom a:hover { background: var(--red) !important; color: var(--white) !important; }
+    .cpizza-zone-label { background: rgba(173,0,4,0.92); color: var(--white); border: 1px solid var(--yellow); border-radius: 50px; padding: 6px 14px; font-family: var(--font-display); font-size: 0.85rem; letter-spacing: 0.08em; box-shadow: 0 4px 14px rgba(0,0,0,0.4); }
+    .cpizza-zone-label::before { display: none; }
+
+    /* CONTACT CARDS */
+    .contact-section { padding: 100px 32px; }
+    .contact-inner { max-width: 1100px; margin: 0 auto; }
+    .contact-title { font-family: var(--font-display); font-size: clamp(2.5rem, 5vw, 4.5rem); color: var(--white); text-align: center; letter-spacing: 0.02em; margin-bottom: 52px; }
+    .contact-title span { color: var(--yellow); }
+    .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .contact-card { background: var(--black-deep); border: 1px solid rgba(243,236,34,0.1); border-radius: var(--radius-card); padding: 36px 28px; text-align: center; transition: transform 0.3s var(--ease), border-color 0.3s ease, box-shadow 0.3s ease; display: block; cursor: pointer; }
+    .contact-card:hover { transform: translateY(-5px); border-color: var(--yellow); box-shadow: 0 16px 36px rgba(173,0,4,0.18); }
+    .contact-card:focus-visible { outline: 2px solid var(--yellow); outline-offset: 4px; }
+    .contact-icon { width: 56px; height: 56px; border-radius: 14px; background: var(--red); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin: 0 auto 18px; box-shadow: 0 4px 16px rgba(173,0,4,0.30); }
+    .contact-card-title { font-family: var(--font-display); font-size: 1.4rem; color: var(--white); letter-spacing: 0.04em; margin-bottom: 8px; }
+    .contact-card-val { font-size: 0.95rem; color: var(--yellow); font-weight: 600; margin-bottom: 4px; }
+    .contact-card-desc { font-size: 0.78rem; color: var(--text-muted); margin-top: 8px; }
+
+    /* HOURS */
+    .hours-section { background: var(--cream); padding: 100px 32px; color: var(--gray); }
+    .hours-inner { max-width: 700px; margin: 0 auto; text-align: center; }
+    .hours-title { font-family: var(--font-display); font-size: clamp(2.5rem, 5vw, 4rem); color: var(--black); letter-spacing: 0.02em; margin-bottom: 40px; }
+    .hours-title span { color: var(--red); }
+    .hours-table { width: 100%; max-width: 500px; margin: 0 auto 32px; }
+    .hours-row { display: flex; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 0.9rem; }
+    .hours-day { font-weight: 600; color: var(--black); }
+    .hours-time { color: var(--gray); }
+    .hours-note { font-size: 0.78rem; color: var(--text-muted); font-style: italic; }
+
+    /* CTA BAND */
+    .cta-band { background: var(--red); padding: 72px 32px; }
+    .cta-band-inner { max-width: 1320px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
+    .cta-band-title { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 4rem); color: var(--white); line-height: 0.95; letter-spacing: 0.02em; }
+    .cta-band-title span { color: var(--yellow); }
+    .cta-band-right { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    /* FOOTER */
+    #footer { background: var(--black-deep); padding: 64px 32px 32px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .footer-inner { max-width: 1320px; margin: 0 auto; }
+    .footer-top { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 48px; padding-bottom: 48px; border-bottom: 1px solid rgba(255,255,255,0.06); margin-bottom: 32px; }
+    .footer-brand-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .footer-brand-logo img { height: 80px; width: 80px; object-fit: contain; border-radius: 50%; }
+    .footer-brand-name { font-family: var(--font-display); font-size: 1.5rem; color: var(--white); }
+    .footer-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 24px; }
+    .footer-socials { display: flex; gap: 10px; }
+    .social-link { width: 36px; height: 36px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 0.8rem; transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease; }
+    .social-link:hover { border-color: var(--yellow); color: var(--yellow); background: var(--yellow-dim); }
+    .footer-col-title { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--white); margin-bottom: 20px; }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-links a { font-size: 0.82rem; color: var(--text-muted); transition: color 0.2s ease; }
+    .footer-links a:hover { color: var(--white); }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .footer-copy { font-size: 0.75rem; color: rgba(255,255,255,0.25); }
+    .footer-legal { display: flex; gap: 24px; }
+    .footer-legal a { font-size: 0.72rem; color: rgba(255,255,255,0.25); transition: color 0.2s ease; }
+    .footer-legal a:hover { color: var(--text-muted); }
+
+    @media (max-width: 1100px) { .loc-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 768px) {
+      .nav-inner { grid-template-columns: 1fr auto; }
+      .nav-links, .nav-cta { display: none; } .nav-burger { display: flex; }
+      .nav-right { border-left: none; padding-left: 0; }
+      .loc-grid { grid-template-columns: 1fr; } .contact-grid { grid-template-columns: 1fr; }
+      .cta-band-inner { justify-content: center; text-align: center; } .cta-band-right { justify-content: center; }
+      .footer-top { grid-template-columns: 1fr; gap: 32px; } .footer-bottom { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="main-nav" role="navigation" aria-label="Navigation principale">
+    <div class="nav-inner">
+      <a href="mockup-popeyes.html" class="nav-logo" aria-label="C Pizza — Accueil">
+        <img src="brand_assets/logo-new.jpeg" alt="Logo C Pizza" width="46" height="46">
+        <div><div class="nav-logo-text">C PIZZA</div></div>
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="offres.html">Offres</a></li>
+        <li><a href="nous-trouver.html" class="active">Nous trouver</a></li>
+      </ul>
+      <div class="nav-right">
+        <a href="commander.html" class="btn btn-red nav-cta">Commander →</a>
+        <button class="nav-burger" id="burger-btn" aria-label="Ouvrir le menu" aria-expanded="false"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Menu mobile">
+    <a href="menu.html">Menu</a><a href="offres.html">Offres</a><a href="nous-trouver.html">Nous trouver</a>
+    <a href="commander.html" class="btn btn-red" style="width:100%;justify-content:center;border-radius:50px;margin-top:16px;">Commander</a>
+  </div>
+
+  <!-- HERO -->
+  <section id="hero" aria-label="En-tete localisation">
+    <div class="hero-inner">
+      <div class="section-label fade-up" style="justify-content:center;">Nos Adresses</div>
+      <h1 class="hero-title fade-up delay-1">NOUS <span>TROUVER</span></h1>
+      <p class="hero-sub fade-up delay-2">4 adresses dans Douala pour etre toujours plus proches de vous.</p>
+    </div>
+  </section>
+
+  <!-- LOCATIONS -->
+  <section class="loc-section" aria-labelledby="loc-title">
+    <div class="loc-inner">
+      <div class="loc-grid">
+
+        <article class="loc-card fade-up">
+          <div class="loc-card-num">01</div>
+          <h3 class="loc-card-name">C PIZZA YASSA</h3>
+          <p class="loc-card-desc">Notre adresse historique depuis 2018</p>
+          <address class="loc-card-addr">Quartier Yassa<br>Douala, Cameroun</address>
+          <div class="loc-card-meta">
+            <div class="loc-card-line"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Lun-Dim : 12h-22h (7/7)</div>
+            <div class="loc-card-line"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Livraison : 13h-21h</div>
+            <div class="loc-card-line"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg> +237 6 20 60 92 97</div>
+          </div>
+          <div class="loc-card-ctas">
+            <a href="commander.html?location=yassa" class="loc-card-cta">Commander</a>
+
+            <a href="https://www.google.com/maps/dir/?api=1&amp;destination=4.0047507,9.8030823" target="_blank" rel="noopener" class="loc-card-cta loc-card-cta-outline">Itinéraire</a>
+          </div>
+        </article>
+
+        <article class="loc-card fade-up delay-1">
+          <div class="loc-card-num">02</div>
+          <h3 class="loc-card-name">C PIZZA ESSOS</h3>
+          <p class="loc-card-desc">Au coeur d'un quartier dynamique</p>
+          <address class="loc-card-addr">Quartier Essos<br>Yaoundé, Cameroun</address>
+          <div class="loc-card-meta">
+            <div class="loc-card-line"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Lun-Dim : 12h-22h (7/7)</div>
+            <div class="loc-card-line"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg> +237 6 20 60 92 97</div>
+          </div>
+          <div class="loc-card-ctas">
+            <a href="commander.html?location=essos" class="loc-card-cta">Commander</a>
+
+            <a href="https://www.google.com/maps/dir/?api=1&amp;destination=C+Pizza+Essos+Yaound%C3%A9" target="_blank" rel="noopener" class="loc-card-cta loc-card-cta-outline">Itinéraire</a>
+          </div>
+        </article>
+
+        <article class="loc-card fade-up delay-2">
+          <div class="loc-card-num">03</div>
+          <h3 class="loc-card-name">C PIZZA ODZA</h3>
+          <p class="loc-card-desc">Pres de l'aeroport, ideal pour les voyageurs</p>
+          <address class="loc-card-addr">Quartier Odza<br>Yaoundé, Cameroun</address>
+          <div class="loc-card-meta">
+            <div class="loc-card-line"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Lun-Dim : 11h-22h30 (7/7)</div>
+            <div class="loc-card-line"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg> +237 6 20 60 92 97</div>
+          </div>
+          <div class="loc-card-ctas">
+            <a href="commander.html?location=odza" class="loc-card-cta">Commander</a>
+
+            <a href="https://www.google.com/maps/dir/?api=1&amp;destination=3.8653216,11.5174201" target="_blank" rel="noopener" class="loc-card-cta loc-card-cta-outline">Itinéraire</a>
+          </div>
+        </article>
+
+        <article class="loc-card fade-up delay-3">
+          <div class="loc-card-num">04</div>
+          <h3 class="loc-card-name">C PIZZA BONAMOUSSADI</h3>
+          <p class="loc-card-desc">Notre adresse la plus recente</p>
+          <address class="loc-card-addr">Quartier Bonamoussadi<br>Douala, Cameroun</address>
+          <div class="loc-card-meta">
+            <div class="loc-card-line"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Lun-Dim : 12h-22h (7/7)</div>
+            <div class="loc-card-line"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg> +237 6 20 60 92 97</div>
+          </div>
+          <div class="loc-card-ctas">
+            <a href="commander.html?location=bonamoussadi" class="loc-card-cta">Commander</a>
+
+            <a href="https://www.google.com/maps/dir/?api=1&amp;destination=4.0914659,9.7493797" target="_blank" rel="noopener" class="loc-card-cta loc-card-cta-outline">Itinéraire</a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- DELIVERY ZONES -->
+  <section class="delivery-section" aria-labelledby="delivery-title">
+    <div class="delivery-inner">
+      <div class="section-label fade-up" style="justify-content:center;color:var(--red);">Livraison Express</div>
+      <h2 class="delivery-title fade-up delay-1" id="delivery-title">ZONES DE <span>LIVRAISON</span></h2>
+      <p class="delivery-sub fade-up delay-2">Nous livrons à Douala et Yaoundé en 30 minutes chrono.</p>
+      <div id="delivery-map" class="fade-up" role="img" aria-label="Carte des zones de livraison C Pizza : Douala et Yaoundé"></div>
+      <div class="delivery-fees fade-up">
+        <div class="delivery-fee-pill">Livraison dans tout Douala et tout Yaoundé</div>
+        <p class="delivery-fee-note">Paiement à la livraison · Le prix de la livraison vous sera communiqué sur WhatsApp selon votre adresse.</p>
+      </div>
+      <div class="delivery-badge fade-up">⚡ Livraison en 30 min chrono</div>
+      <p class="delivery-info fade-up">Commande minimum : 3 000 FCFA</p>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact-section" aria-labelledby="contact-title">
+    <div class="contact-inner">
+      <h2 class="contact-title fade-up" id="contact-title">NOUS <span>CONTACTER</span></h2>
+      <div class="contact-grid">
+        <a href="tel:+237620609297" class="contact-card fade-up" aria-label="Appeler C Pizza">
+          <div class="contact-icon" aria-hidden="true">📞</div>
+          <h3 class="contact-card-title">TELEPHONE</h3>
+          <p class="contact-card-val">+237 6 20 60 92 97</p>
+          <p class="contact-card-desc">Appelez-nous pour commander ou pour toute question.</p>
+        </a>
+        <a href="https://wa.me/237620609297" target="_blank" rel="noopener" class="contact-card fade-up delay-1" aria-label="Contacter C Pizza sur WhatsApp">
+          <div class="contact-icon" aria-hidden="true">💬</div>
+          <h3 class="contact-card-title">WHATSAPP</h3>
+          <p class="contact-card-val">+237 6 20 60 92 97</p>
+          <p class="contact-card-desc">Commandez directement par WhatsApp — rapide et pratique.</p>
+        </a>
+        <a href="mailto:contact@cpizza.cm" class="contact-card fade-up delay-2" aria-label="Envoyer un email à C Pizza">
+          <div class="contact-icon" aria-hidden="true">📧</div>
+          <h3 class="contact-card-title">EMAIL</h3>
+          <p class="contact-card-val">contact@cpizza.cm</p>
+          <p class="contact-card-desc">Pour partenariats, evenements et reclamations.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOURS -->
+  <section class="hours-section" aria-labelledby="hours-title">
+    <div class="hours-inner">
+      <div class="section-label fade-up" style="justify-content:center;color:var(--red);">Horaires</div>
+      <h2 class="hours-title fade-up delay-1" id="hours-title">HORAIRES <span>D'OUVERTURE</span></h2>
+      <div class="hours-table fade-up delay-2">
+        <div class="hours-row"><span class="hours-day">Yassa <small>· Lun – Dim</small></span><span class="hours-time">12h00 – 22h00</span></div>
+        <div class="hours-row"><span class="hours-day">Essos <small>· Lun – Dim</small></span><span class="hours-time">12h00 – 22h00</span></div>
+        <div class="hours-row"><span class="hours-day">Odza <small>· Lun – Dim</small></span><span class="hours-time">11h00 – 22h30</span></div>
+        <div class="hours-row"><span class="hours-day">Bonamoussadi <small>· Lun – Dim</small></span><span class="hours-time">12h00 – 22h00</span></div>
+        <div class="hours-row"><span class="hours-day">Plages horaires pour les livraisons de toutes les agences</span><span class="hours-time">13h00 – 21h00</span></div>
+      </div>
+      <p class="hours-note fade-up">Toutes nos adresses sont ouvertes 7j/7. Pour la livraison, appelez l'adresse la plus proche.</p>
+    </div>
+  </section>
+
+  <!-- CTA BAND -->
+  <section class="cta-band" aria-label="Appel a l'action">
+    <div class="cta-band-inner">
+      <div class="fade-up"><h2 class="cta-band-title">UNE <span>QUESTION</span> ?</h2></div>
+      <div class="cta-band-right fade-up delay-1">
+        <a href="tel:+237620609297" class="btn btn-outline-white">📞 Appeler</a>
+        <a href="https://wa.me/237620609297" class="btn btn-outline-white" style="background:rgba(255,255,255,0.1);">💬 WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="footer" role="contentinfo">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brand-logo"><img src="brand_assets/logo-new.jpeg" alt="Logo C Pizza" width="80" height="80"><div><div class="footer-brand-name">C PIZZA</div></div></div>
+        </div>
+        <div><div class="footer-col-title">Menu</div><ul class="footer-links"><li><a href="menu.html">Pizzas Classiques</a></li><li><a href="menu.html">Pizzas Speciales</a></li><li><a href="menu.html">Vegetariennes</a></li><li><a href="offres.html">Offres du moment</a></li></ul></div>
+        <div><div class="footer-col-title">Informations</div><ul class="footer-links"><li><a href="nous-trouver.html">Nous trouver</a></li><li><a href="commander.html">Commander en ligne</a></li></ul></div>
+        <div><div class="footer-col-title">Contact</div><ul class="footer-links"><li><a href="tel:+237620609297">+237 6 20 60 92 97</a></li><li>Cameroun</li><li>Lun – Dim : 11h – 22h30</li></ul></div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy">© <span class="year"></span> C PIZZA — Tous droits reserves</p>
+        <div class="footer-legal"><a href="#">Mentions legales</a><a href="#">Politique de confidentialite</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.year').forEach(el => el.textContent = new Date().getFullYear());
+    const nav = document.getElementById('main-nav');
+    window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 60); }, { passive: true });
+    const burger = document.getElementById('burger-btn');
+    const mm = document.getElementById('mobile-menu');
+    burger.addEventListener('click', () => { const o = mm.classList.toggle('open'); burger.setAttribute('aria-expanded', o); document.body.style.overflow = o ? 'hidden' : ''; });
+    const fadeObs = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); fadeObs.unobserve(e.target); } }); }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.fade-up').forEach(el => fadeObs.observe(el));
+  </script>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    (function initCpizzaMap() {
+      if (typeof L === 'undefined' || !document.getElementById('delivery-map')) return;
+
+      const locations = [
+        { name: 'C Pizza Yassa',        city: 'Douala',  num: '01', lat: 4.0047507, lng: 9.8030823,  hours: 'Lun-Dim 12h-22h · Livraison 13h-21h', maps: 'https://www.google.com/maps/dir/?api=1&destination=4.0047507,9.8030823' },
+        { name: 'C Pizza Bonamoussadi', city: 'Douala',  num: '02', lat: 4.0914659, lng: 9.7493797,  hours: 'Lun-Dim 12h-22h',                     maps: 'https://www.google.com/maps/dir/?api=1&destination=4.0914659,9.7493797' },
+        { name: 'C Pizza Odza',         city: 'Yaoundé', num: '03', lat: 3.8653216, lng: 11.5174201, hours: 'Lun-Dim 11h-22h30',                   maps: 'https://www.google.com/maps/dir/?api=1&destination=3.8653216,11.5174201' },
+        { name: 'C Pizza Essos',        city: 'Yaoundé', num: '04', lat: 3.8748143, lng: 11.5428508, hours: 'Lun-Dim 12h-22h',                     maps: 'https://www.google.com/maps/dir/?api=1&destination=3.8748143,11.5428508' }
+      ];
+
+      const map = L.map('delivery-map', {
+        scrollWheelZoom: false,
+        attributionControl: false,
+        zoomControl: true,
+        preferCanvas: true,
+        fadeAnimation: false,
+        zoomAnimation: true,
+        markerZoomAnimation: false,
+        inertia: true
+      });
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '',
+        subdomains: 'abcd',
+        maxZoom: 19,
+        updateWhenIdle: true,
+        keepBuffer: 4,
+        crossOrigin: true
+      }).addTo(map);
+
+      // Highlight des deux zones de livraison : Douala et Yaoundé
+      const cities = [
+        { name: 'Douala',  center: [4.0511, 9.7679],  radius: 14000 },
+        { name: 'Yaoundé', center: [3.8480, 11.5021], radius: 14000 }
+      ];
+      const cityHighlights = cities.map(c => L.circle(c.center, {
+        radius: c.radius,
+        color: '#F3EC22',
+        weight: 2,
+        opacity: 0.85,
+        fillColor: '#AD0004',
+        fillOpacity: 0.18
+      }).addTo(map).bindTooltip('Livraison dans tout ' + c.name, { permanent: true, direction: 'center', className: 'cpizza-zone-label' }));
+
+      const bounds = L.latLngBounds([]);
+      cities.forEach(c => bounds.extend(c.center));
+      locations.forEach(l => bounds.extend([l.lat, l.lng]));
+      map.fitBounds(bounds, { padding: [60, 60] });
+
+      locations.forEach(loc => {
+        const icon = L.divIcon({
+          className: 'cpizza-pin-wrap',
+          html: '<div class="cpizza-pin"><span>' + loc.num + '</span></div>',
+          iconSize: [36, 36],
+          iconAnchor: [18, 36],
+          popupAnchor: [0, -32]
+        });
+        L.marker([loc.lat, loc.lng], { icon, title: loc.name + ' · ' + loc.city })
+          .addTo(map)
+          .bindPopup('<strong>' + loc.name + '</strong><small>' + loc.city + ' · ' + loc.hours + '</small><a href="' + loc.maps + '" target="_blank" rel="noopener">Itinéraire ↗</a>');
+      });
+    })();
+  </script>
+</body>
+</html>
