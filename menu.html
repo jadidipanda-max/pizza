@@ -428,6 +428,19 @@
       #cart-float { display: flex; bottom: 20px; right: 20px; }
       #hero-menu { padding: 120px 20px 48px; }
     }
+    @media (max-width: 430px) {
+      .nav-inner { padding: 0 16px; height: 64px; }
+      .nav-logo img { height: 38px; width: 38px; }
+      .nav-logo-text { font-size: 1.25rem; }
+      #hero-menu { padding: 100px 16px 36px; }
+      .hero-menu-title { font-size: clamp(2rem, 12vw, 3.2rem); }
+      .menu-layout { padding: 0 12px; }
+      .pizza-card-name { font-size: 0.88rem; }
+      .list-item { padding: 12px 12px; gap: 10px; }
+      .list-item-img { width: 56px; height: 56px; }
+      .cart-sidebar { max-width: 100vw; }
+      .footer-bottom { font-size: 0.68rem; }
+    }
   </style>
 </head>
 <body>
@@ -435,7 +448,7 @@
   <!-- NAV -->
   <nav id="main-nav" role="navigation" aria-label="Navigation principale">
     <div class="nav-inner">
-      <a href="mockup-popeyes.html" class="nav-logo" aria-label="C Pizza — Accueil">
+      <a href="index.html" class="nav-logo" aria-label="C Pizza — Accueil">
         <img src="brand_assets/logo-new.jpeg" alt="Logo C Pizza" width="46" height="46">
         <div>
           <div class="nav-logo-text">C PIZZA</div>
