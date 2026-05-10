@@ -554,8 +554,10 @@
       const sub = getSubtotal();
       const isDelivery = deliveryMode === 'livraison';
 
+      const QUARTIER_KEY = { yassa: 'Yassa', essos: 'Essos', odza: 'Odza', bonamoussadi: 'Bonamoussadi' };
       let msg = `🍕 *NOUVELLE COMMANDE C PIZZA*\n\n`;
-      msg += `📍 *Adresse :* ${LOC_NAMES[selectedLoc]}\n`;
+      msg += `Quartier: ${QUARTIER_KEY[selectedLoc] || selectedLoc}\n`;
+      msg += `📍 *Agence :* ${LOC_NAMES[selectedLoc]}\n`;
       msg += `👤 *Client :* ${name}\n`;
       msg += `📞 *Tel :* ${phone}\n\n`;
       msg += `📋 *Commande :*\n`;
@@ -603,3 +605,4 @@
   </script>
 </body>
 </html>
+
