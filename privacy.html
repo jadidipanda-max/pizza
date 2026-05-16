@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Politique de Confidentialité — C Pizza Douala</title>
+  <meta name="description" content="Politique de confidentialité de C Pizza, service de commande en ligne à Douala, Cameroun. Informations sur la collecte et l'utilisation de vos données personnelles.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── TOKENS ─── */
+    :root {
+      --red:        #AD0004;
+      --red-hover:  #8C0003;
+      --yellow:     #F3EC22;
+      --yellow-dim: rgba(243,236,34,0.15);
+      --gray:       #494949;
+      --gray-light: #5a5a5a;
+      --black:      #494949;
+      --black-deep: #3a3a3a;
+      --cream:      #FAFAF5;
+      --white:      #FFFFFF;
+      --text-light: #F5F0E8;
+      --text-muted: #B0A09A;
+
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-script:  'Playfair Display', serif;
+      --font-body:    'Montserrat', sans-serif;
+
+      --radius-btn:  50px;
+      --radius-card: 14px;
+      --shadow-card: 0 6px 28px rgba(0,0,0,0.10);
+      --shadow-card-hover: 0 14px 40px rgba(173,0,4,0.18), 0 4px 12px rgba(0,0,0,0.12);
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ─── RESET ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--black);
+      color: var(--text-light);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+    button { cursor: pointer; font-family: var(--font-body); border: none; }
+
+    /* ─── FADE-UP ANIMATION ─── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.72s var(--ease), transform 0.72s var(--ease);
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+    .fade-up.delay-1 { transition-delay: 0.1s; }
+    .fade-up.delay-2 { transition-delay: 0.2s; }
+    .fade-up.delay-3 { transition-delay: 0.3s; }
+    .fade-up.delay-4 { transition-delay: 0.4s; }
+
+    /* ─── SECTION LABEL ─── */
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 16px;
+    }
+    .section-label::before {
+      content: '';
+      width: 28px;
+      height: 2px;
+      background: var(--yellow);
+    }
+
+    /* ─── BUTTONS ─── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 15px 34px;
+      border-radius: var(--radius-btn);
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: transform 0.28s var(--ease), box-shadow 0.28s var(--ease), background 0.22s ease;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn:active { transform: translateY(0); }
+    .btn-red {
+      background: var(--red);
+      color: var(--white);
+      box-shadow: 0 4px 18px rgba(173,0,4,0.35);
+    }
+    .btn-red:hover {
+      background: var(--red-hover);
+      box-shadow: 0 8px 30px rgba(173,0,4,0.50);
+    }
+    .btn-outline-yellow {
+      background: transparent;
+      color: var(--yellow);
+      border: 2px solid var(--yellow);
+    }
+    .btn-outline-yellow:hover {
+      background: var(--yellow-dim);
+      box-shadow: 0 4px 20px rgba(243,236,34,0.18);
+    }
+
+    /* ════════════════════════════════════
+       1. NAVIGATION
+    ════════════════════════════════════ */
+    #main-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: var(--black);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+    #main-nav.scrolled {
+      background: rgba(16,0,0,0.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 2px 24px rgba(0,0,0,0.4);
+    }
+    .nav-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 32px;
+      height: 72px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 24px;
+    }
+    .nav-logo { justify-self: start; }
+    .nav-links { justify-self: center; }
+    .nav-right {
+      justify-self: end;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding-left: 32px;
+      border-left: 1px solid rgba(255,255,255,0.08);
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+    .nav-logo img {
+      height: 46px;
+      width: 46px;
+      object-fit: contain;
+      border-radius: 50%;
+    }
+    .nav-logo-text {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      letter-spacing: 0.05em;
+      color: var(--white);
+      line-height: 1;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(245,240,232,0.75);
+      position: relative;
+      padding-bottom: 4px;
+      transition: color 0.2s ease;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 2px;
+      background: var(--yellow);
+      transition: width 0.28s var(--ease);
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-links a:hover::after,
+    .nav-links a.active::after { width: 100%; }
+    .nav-links a.active { color: var(--white); }
+    .nav-cta { flex-shrink: 0; position: relative; right: -28px; }
+    .nav-burger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      padding: 6px;
+    }
+    .nav-burger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--white);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    /* Mobile drawer */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 99;
+      background: var(--black);
+      padding: 100px 32px 40px;
+      flex-direction: column;
+      gap: 32px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: var(--font-display);
+      font-size: 2.8rem;
+      color: var(--white);
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 20px;
+    }
+    .mobile-menu a:hover { color: var(--yellow); }
+
+    /* ════════════════════════════════════
+       2. PAGE HERO
+    ════════════════════════════════════ */
+    #page-hero {
+      padding-top: 72px;
+      background: var(--black-deep);
+      position: relative;
+      overflow: hidden;
+    }
+    /* Red accent bar left */
+    .page-hero-accent {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 5px;
+      background: var(--yellow);
+    }
+    /* Subtle texture gradient */
+    .page-hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 100% 50%, rgba(173,0,4,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 0% 100%, rgba(243,236,34,0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .page-hero-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 72px 32px 80px;
+      position: relative;
+      z-index: 1;
+    }
+    .page-hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 20px;
+    }
+    .page-hero-eyebrow::before {
+      content: '';
+      width: 28px;
+      height: 2px;
+      background: var(--yellow);
+    }
+    .page-hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(3.5rem, 8vw, 7rem);
+      line-height: 0.92;
+      letter-spacing: 0.02em;
+      color: var(--white);
+      margin-bottom: 24px;
+    }
+    .page-hero-title span { color: var(--yellow); }
+    .page-hero-desc {
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--text-muted);
+      line-height: 1.8;
+      max-width: 560px;
+    }
+    .page-hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-top: 32px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      flex-wrap: wrap;
+    }
+    .page-hero-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+    }
+    .page-hero-meta-item svg {
+      width: 14px;
+      height: 14px;
+      stroke: var(--yellow);
+      fill: none;
+      stroke-width: 2;
+      flex-shrink: 0;
+    }
+
+    /* ════════════════════════════════════
+       3. PRIVACY CONTENT
+    ════════════════════════════════════ */
+    #privacy-content {
+      background: var(--cream);
+      padding: 100px 32px;
+    }
+    .privacy-inner {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+
+    /* Quick summary cards */
+    .privacy-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 72px;
+    }
+    .summary-card {
+      background: var(--white);
+      border-radius: var(--radius-card);
+      padding: 28px 24px;
+      border-top: 3px solid var(--red);
+      box-shadow: var(--shadow-card);
+      transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+    }
+    .summary-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-card-hover);
+    }
+    .summary-card-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--red);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      font-size: 1.25rem;
+    }
+    .summary-card-title {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      letter-spacing: 0.04em;
+      color: var(--black);
+      margin-bottom: 8px;
+    }
+    .summary-card-text {
+      font-size: 0.78rem;
+      color: var(--gray);
+      line-height: 1.7;
+    }
+
+    /* Policy sections */
+    .policy-section {
+      margin-bottom: 56px;
+      padding-bottom: 56px;
+      border-bottom: 1px solid rgba(73,73,73,0.12);
+    }
+    .policy-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .policy-section-num {
+      font-family: var(--font-body);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .policy-section-num::before {
+      content: '';
+      width: 20px;
+      height: 2px;
+      background: var(--red);
+    }
+    .policy-section-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      color: var(--black);
+      line-height: 1;
+      letter-spacing: 0.03em;
+      margin-bottom: 20px;
+    }
+    .policy-section-title span { color: var(--red); }
+    .policy-text {
+      font-size: 0.9rem;
+      font-weight: 400;
+      color: var(--gray);
+      line-height: 1.85;
+      margin-bottom: 18px;
+    }
+    .policy-text:last-child { margin-bottom: 0; }
+
+    /* Data list */
+    .data-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .data-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      font-size: 0.88rem;
+      color: var(--gray);
+      line-height: 1.6;
+    }
+    .data-list li::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--red);
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+    .data-list li strong {
+      color: var(--black);
+      font-weight: 700;
+    }
+
+    /* Highlight box */
+    .policy-highlight {
+      background: var(--black-deep);
+      border-radius: var(--radius-card);
+      padding: 28px 32px;
+      margin: 24px 0;
+      border-left: 4px solid var(--yellow);
+      position: relative;
+      overflow: hidden;
+    }
+    .policy-highlight::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 100% 50%, rgba(243,236,34,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .policy-highlight-icon {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+    .policy-highlight p {
+      font-size: 0.88rem;
+      color: var(--text-light);
+      line-height: 1.75;
+      position: relative;
+      z-index: 1;
+    }
+    .policy-highlight p strong {
+      color: var(--yellow);
+    }
+
+    /* WhatsApp callout */
+    .whatsapp-callout {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: #075E54;
+      border-radius: var(--radius-card);
+      padding: 24px 28px;
+      margin: 24px 0;
+    }
+    .whatsapp-callout-icon {
+      width: 52px;
+      height: 52px;
+      flex-shrink: 0;
+    }
+    .whatsapp-callout-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+    .whatsapp-callout-text {
+      flex: 1;
+    }
+    .whatsapp-callout-title {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      color: var(--white);
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+    }
+    .whatsapp-callout-desc {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.6;
+    }
+
+    /* Contact box */
+    .policy-contact-box {
+      background: var(--white);
+      border-radius: var(--radius-card);
+      padding: 36px 32px;
+      box-shadow: var(--shadow-card);
+      border: 1px solid rgba(173,0,4,0.1);
+      margin-top: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .policy-contact-box-left {}
+    .policy-contact-box-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: var(--black);
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+    .policy-contact-box-text {
+      font-size: 0.82rem;
+      color: var(--gray);
+      line-height: 1.6;
+    }
+    .policy-contact-email {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--red);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 14px 28px;
+      border-radius: var(--radius-btn);
+      box-shadow: 0 4px 18px rgba(173,0,4,0.35);
+      transition: transform 0.28s var(--ease), box-shadow 0.28s var(--ease), background 0.22s ease;
+      flex-shrink: 0;
+    }
+    .policy-contact-email:hover {
+      background: var(--red-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(173,0,4,0.50);
+    }
+    .policy-contact-email svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    /* ════════════════════════════════════
+       4. CTA BAND
+    ════════════════════════════════════ */
+    #cta-band {
+      background: var(--red);
+      padding: 72px 32px;
+    }
+    .cta-band-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .cta-band-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 4rem);
+      color: var(--white);
+      line-height: 0.95;
+      letter-spacing: 0.02em;
+    }
+    .cta-band-title span { color: var(--yellow); }
+    .cta-band-sub {
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.7;
+      margin-top: 10px;
+    }
+    .cta-band-right {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* ════════════════════════════════════
+       5. FOOTER
+    ════════════════════════════════════ */
+    #footer {
+      background: var(--black-deep);
+      padding: 64px 32px 32px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .footer-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 48px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 32px;
+    }
+    .footer-brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .footer-brand-logo img {
+      height: 80px;
+      width: 80px;
+      object-fit: contain;
+      border-radius: 50%;
+    }
+    .footer-brand-name {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: var(--white);
+    }
+    .footer-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+    .footer-col-title {
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--white);
+      margin-bottom: 20px;
+    }
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .footer-links a {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      transition: color 0.2s ease;
+    }
+    .footer-links a:hover { color: var(--white); }
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .footer-copy {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.25);
+    }
+    .footer-legal {
+      display: flex;
+      gap: 24px;
+    }
+    .footer-legal a {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.25);
+      transition: color 0.2s ease;
+    }
+    .footer-legal a:hover { color: var(--text-muted); }
+    .footer-legal a.active-legal {
+      color: var(--yellow);
+    }
+
+    /* ════════════════════════════════════
+       RESPONSIVE
+    ════════════════════════════════════ */
+    @media (max-width: 768px) {
+      .nav-inner { grid-template-columns: 1fr auto; }
+      .nav-links, .nav-cta { display: none; }
+      .nav-right { border-left: none; padding-left: 0; }
+      .nav-burger { display: flex; }
+      .privacy-summary { grid-template-columns: 1fr; gap: 14px; }
+      .policy-contact-box { flex-direction: column; align-items: flex-start; }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+      .footer-legal { justify-content: center; }
+      .cta-band-inner { justify-content: center; text-align: center; }
+      .cta-band-right { justify-content: center; }
+    }
+
+    @media (max-width: 480px) {
+      #privacy-content { padding: 60px 20px; }
+      .page-hero-inner { padding: 56px 20px 60px; }
+      .whatsapp-callout { flex-direction: column; align-items: flex-start; gap: 14px; }
+      .footer-top { grid-template-columns: 1fr; gap: 32px; }
+    }
+
+    @media (max-width: 430px) {
+      .nav-inner { padding: 0 16px; height: 64px; }
+      .nav-logo img { height: 38px; width: 38px; }
+      .nav-logo-text { font-size: 1.25rem; }
+      #footer { padding: 48px 20px 24px; }
+      .policy-highlight { padding: 22px 20px; }
+      .policy-contact-box { padding: 24px 20px; }
+    }
+
+    /* Focus visible */
+    :focus-visible {
+      outline: 2px solid var(--yellow);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════
+       NAVIGATION
+  ═══════════════════════════════════ -->
+  <nav id="main-nav" role="navigation" aria-label="Navigation principale">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo" aria-label="C Pizza — Accueil">
+        <img src="brand_assets/logo-new.jpeg" alt="Logo C Pizza" width="46" height="46">
+        <div>
+          <div class="nav-logo-text">C PIZZA</div>
+        </div>
+      </a>
+
+      <ul class="nav-links" role="list">
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="offres.html">Offres</a></li>
+        <li><a href="nous-trouver.html">Nous trouver</a></li>
+      </ul>
+
+      <div class="nav-right">
+        <a href="commander.html" class="btn btn-red nav-cta" aria-label="Commander en ligne">
+          Commander →
+        </a>
+        <button class="nav-burger" id="burger-btn" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobile-menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Menu mobile">
+    <a href="index.html">Accueil</a>
+    <a href="menu.html">Menu</a>
+    <a href="offres.html">Offres</a>
+    <a href="nous-trouver.html">Nous trouver</a>
+    <a href="commander.html">Commander →</a>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       PAGE HERO
+  ═══════════════════════════════════ -->
+  <section id="page-hero">
+    <div class="page-hero-accent"></div>
+    <div class="page-hero-bg"></div>
+    <div class="page-hero-inner">
+      <div class="page-hero-eyebrow fade-up">C Pizza — Douala, Cameroun</div>
+      <h1 class="page-hero-title fade-up delay-1">
+        Politique de<br><span>Confidentialité</span>
+      </h1>
+      <p class="page-hero-desc fade-up delay-2">
+        Votre vie privée est importante pour nous. Cette page explique comment C Pizza collecte, utilise et protège vos informations personnelles dans le cadre de notre service de commande à domicile.
+      </p>
+      <div class="page-hero-meta fade-up delay-3">
+        <div class="page-hero-meta-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Mise à jour : Mai 2025
+        </div>
+        <div class="page-hero-meta-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Données protégées
+        </div>
+        <div class="page-hero-meta-item">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Non partagé avec des tiers
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════
+       PRIVACY CONTENT
+  ═══════════════════════════════════ -->
+  <section id="privacy-content">
+    <div class="privacy-inner">
+
+      <!-- Quick Summary Cards -->
+      <div class="privacy-summary">
+        <div class="summary-card fade-up">
+          <div class="summary-card-icon">📋</div>
+          <div class="summary-card-title">Données Collectées</div>
+          <div class="summary-card-text">Nom, téléphone et adresse de livraison uniquement pour traiter vos commandes.</div>
+        </div>
+        <div class="summary-card fade-up delay-1">
+          <div class="summary-card-icon">💬</div>
+          <div class="summary-card-title">Communication</div>
+          <div class="summary-card-text">Vos commandes sont transmises et confirmées via WhatsApp par notre équipe.</div>
+        </div>
+        <div class="summary-card fade-up delay-2">
+          <div class="summary-card-icon">🔒</div>
+          <div class="summary-card-title">Aucun Partage</div>
+          <div class="summary-card-text">Vos données ne sont jamais vendues ni partagées avec des tiers.</div>
+        </div>
+      </div>
+
+      <!-- Section 1 — Introduction -->
+      <div class="policy-section">
+        <div class="policy-section-num fade-up">Article 01</div>
+        <h2 class="policy-section-title fade-up delay-1">Introduction &amp;<br><span>Objet</span></h2>
+        <p class="policy-text fade-up delay-2">
+          La présente Politique de Confidentialité s'applique à <strong>C Pizza</strong>, service de commande de pizzas en ligne basé à Douala, Cameroun, accessible via le site <strong>pizza-j-square.vercel.app</strong>. Elle a pour objet de vous informer de manière transparente sur la façon dont nous collectons, utilisons et protégeons vos données personnelles.
+        </p>
+        <p class="policy-text fade-up delay-3">
+          En utilisant notre service de commande en ligne, vous acceptez les pratiques décrites dans cette politique. Nous nous engageons à traiter vos données avec le plus grand soin et dans le strict respect de votre vie privée.
+        </p>
+      </div>
+
+      <!-- Section 2 — Données Collectées -->
+      <div class="policy-section">
+        <div class="policy-section-num fade-up">Article 02</div>
+        <h2 class="policy-section-title fade-up delay-1">Données<br><span>Collectées</span></h2>
+        <p class="policy-text fade-up delay-2">
+          Dans le cadre du traitement de vos commandes, C Pizza collecte uniquement les informations strictement nécessaires à la livraison de vos pizzas :
+        </p>
+        <ul class="data-list fade-up delay-3">
+          <li>
+            <div><strong>Nom complet</strong> — Pour identifier votre commande et personnaliser votre expérience client.</div>
+          </li>
+          <li>
+            <div><strong>Numéro de téléphone</strong> — Pour vous contacter via WhatsApp concernant votre commande, confirmer la livraison ou en cas de problème.</div>
+          </li>
+          <li>
+            <div><strong>Adresse de livraison</strong> — Pour acheminer votre commande à votre domicile ou lieu de travail à Douala.</div>
+          </li>
+        </ul>
+        <div class="policy-highlight fade-up delay-4">
+          <div class="policy-highlight-icon">ℹ️</div>
+          <p>Nous ne collectons <strong>aucune donnée bancaire</strong>, aucun mot de passe, et aucune information sensible. Seules les données indispensables au traitement de votre livraison sont demandées.</p>
+        </div>
+      </div>
+
+      <!-- Section 3 — Utilisation des Données -->
+      <div class="policy-section">
+        <div class="policy-section-num fade-up">Article 03</div>
+        <h2 class="policy-section-title fade-up delay-1">Utilisation<br><span>des Données</span></h2>
+        <p class="policy-text fade-up delay-2">
+          Les informations que vous nous communiquez sont utilisées exclusivement pour les finalités suivantes :
+        </p>
+        <ul class="data-list fade-up delay-3">
+          <li><div><strong>Traitement de votre commande</strong> — Préparation et organisation de votre pizza selon les détails fournis.</div></li>
+          <li><div><strong>Coordination de la livraison</strong> — Transmission de votre adresse au livreur pour assurer la remise de votre commande.</div></li>
+          <li><div><strong>Communication WhatsApp</strong> — Confirmation de commande, suivi en temps réel et éventuels échanges liés à votre livraison.</div></li>
+          <li><div><strong>Service client</strong> — Résolution de tout problème relatif à votre commande ou votre livraison.</div></li>
+        </ul>
+        <p class="policy-text fade-up delay-4">
+          Vos données ne sont utilisées à aucune autre fin, notamment à des fins publicitaires, de profilage ou d'analyse comportementale.
+        </p>
+      </div>
+
+      <!-- Section 4 — WhatsApp -->
+      <div class="policy-section">
+        <div class="policy-section-num fade-up">Article 04</div>
+        <h2 class="policy-section-title fade-up delay-1">Communication<br><span>via WhatsApp</span></h2>
+        <p class="policy-text fade-up delay-2">
+          C Pizza utilise <strong>WhatsApp</strong> comme canal principal de communication pour la gestion des commandes. Ce choix nous permet de vous offrir une expérience rapide, personnelle et fiable.
+        </p>
+
+        <div class="whatsapp-callout fade-up delay-3">
+          <div class="whatsapp-callout-icon">
+            <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="26" cy="26" r="26" fill="#25D366"/>
+              <path d="M26.004 10C17.164 10 10 17.163 10 26.004c0 2.83.737 5.492 2.025 7.802L10 42l8.385-2.196A16.01 16.01 0 0026.004 42C34.837 42 42 34.837 42 26.004 42 17.163 34.837 10 26.004 10zm0 29.312a13.278 13.278 0 01-6.77-1.852l-.486-.289-4.979 1.305 1.33-4.855-.316-.499A13.266 13.266 0 0112.69 26.004c0-7.345 5.976-13.313 13.314-13.313 7.337 0 13.313 5.968 13.313 13.313 0 7.338-5.976 13.308-13.313 13.308zm7.299-9.97c-.4-.2-2.365-1.167-2.73-1.3-.367-.132-.633-.198-.9.2-.267.4-1.032 1.3-1.265 1.566-.234.267-.466.3-.866.1-.4-.2-1.689-.622-3.218-1.984-1.188-1.059-1.99-2.368-2.222-2.767-.233-.4-.025-.616.175-.815.18-.178.4-.466.6-.698.2-.234.267-.4.4-.667.133-.267.067-.5-.033-.7-.1-.2-.9-2.168-1.232-2.967-.324-.78-.654-.674-.9-.686-.233-.012-.5-.015-.766-.015-.267 0-.7.1-1.066.5-.367.4-1.4 1.367-1.4 3.333s1.433 3.866 1.633 4.133c.2.267 2.82 4.302 6.832 6.035.954.412 1.699.658 2.28.842.958.305 1.83.262 2.52.159.768-.114 2.365-.967 2.699-1.9.333-.932.333-1.732.233-1.9-.1-.166-.366-.265-.766-.465z" fill="white"/>
+            </svg>
+          </div>
+          <div class="whatsapp-callout-text">
+            <div class="whatsapp-callout-title">Commandes via WhatsApp</div>
+            <div class="whatsapp-callout-desc">Toutes vos commandes sont transmises et confirmées via WhatsApp. Votre numéro de téléphone est utilisé uniquement pour ce canal de communication direct avec notre équipe.</div>
+          </div>
+        </div>
+
+        <p class="policy-text fade-up delay-4">
+          Veuillez noter que WhatsApp est un service tiers soumis à ses propres conditions d'utilisation et politique de confidentialité. C Pizza n'est pas responsable des pratiques de confidentialité de WhatsApp. Nous vous encourageons à consulter la politique de confidentialité de WhatsApp pour plus d'informations.
+        </p>
+      </div>
+
+      <!-- Section 5 — Non-partage -->
+      <div class="policy-section">
+        <div class="policy-section-num fade-up">Article 05</div>
+        <h2 class="policy-section-title fade-up delay-1">Protection &amp;<br><span>Non-Partage</span></h2>
+        <p class="policy-text fade-up delay-2">
+          C Pizza s'engage formellement à ne jamais vendre, louer, échanger ou partager vos données personnelles avec des tiers à des fins commerciales ou autres.
+        </p>
+        <div class="policy-highlight fade-up delay-3">
+          <div class="policy-highlight-icon">🔒</div>
+          <p><strong>Engagement ferme :</strong> Vos données personnelles (nom, numéro de téléphone, adresse) restent strictement confidentielles et sont utilisées uniquement par l'équipe C Pizza pour le traitement de vos commandes. Elles ne sont jamais transmises à des partenaires publicitaires, plateformes tierces ou autres entités commerciales.</p>
+        </div>
+        <p class="policy-text fade-up delay-4">
+          Vos données peuvent toutefois être divulguées si la loi camerounaise l'exige, ou si nous sommes contraints de le faire par une décision judiciaire. Dans ce cas, nous vous en informerons dans les meilleurs délais, dans la mesure où la loi nous y autorise.
+        </p>
+      </div>
+
+      <!-- Section 6 — Conservation -->
+      <div class="policy-section">
+        <div class="policy-section-num fade-up">Article 06</div>
+        <h2 class="policy-section-title fade-up delay-1">Conservation<br><span>des Données</span></h2>
+        <p class="policy-text fade-up delay-2">
+          Vos données personnelles sont conservées uniquement le temps nécessaire au traitement et à la livraison de votre commande. Une fois la commande finalisée et livrée, vos informations ne sont conservées que pour une durée raisonnable permettant de traiter d'éventuelles réclamations ou problèmes liés à cette commande.
+        </p>
+        <p class="policy-text fade-up delay-3">
+          Vous pouvez à tout moment nous demander de supprimer vos données en nous contactant à l'adresse indiquée ci-dessous.
+        </p>
+      </div>
+
+      <!-- Section 7 — Vos Droits -->
+      <div class="policy-section">
+        <div class="policy-section-num fade-up">Article 07</div>
+        <h2 class="policy-section-title fade-up delay-1">Vos<br><span>Droits</span></h2>
+        <p class="policy-text fade-up delay-2">
+          Conformément aux principes de protection des données, vous disposez des droits suivants concernant vos informations personnelles :
+        </p>
+        <ul class="data-list fade-up delay-3">
+          <li><div><strong>Droit d'accès</strong> — Vous pouvez demander à connaître les données que nous détenons à votre sujet.</div></li>
+          <li><div><strong>Droit de rectification</strong> — Vous pouvez demander la correction de toute information inexacte vous concernant.</div></li>
+          <li><div><strong>Droit à l'effacement</strong> — Vous pouvez demander la suppression de vos données personnelles.</div></li>
+          <li><div><strong>Droit d'opposition</strong> — Vous pouvez vous opposer au traitement de vos données dans certaines circonstances.</div></li>
+        </ul>
+        <p class="policy-text fade-up delay-4">
+          Pour exercer l'un de ces droits, contactez-nous à l'adresse email indiquée dans la section ci-dessous. Nous nous engageons à répondre à votre demande dans un délai raisonnable.
+        </p>
+      </div>
+
+      <!-- Section 8 — Contact -->
+      <div class="policy-section">
+        <div class="policy-section-num fade-up">Article 08</div>
+        <h2 class="policy-section-title fade-up delay-1">Nous<br><span>Contacter</span></h2>
+        <p class="policy-text fade-up delay-2">
+          Pour toute question relative à cette politique de confidentialité, pour exercer vos droits, ou pour toute préoccupation concernant l'utilisation de vos données personnelles, vous pouvez nous contacter directement :
+        </p>
+        <div class="policy-contact-box fade-up delay-3">
+          <div class="policy-contact-box-left">
+            <div class="policy-contact-box-title">C Pizza — Service Client</div>
+            <div class="policy-contact-box-text">
+              Nous nous engageons à répondre à votre demande sous 48 heures ouvrées.<br>
+              Douala, Cameroun
+            </div>
+          </div>
+          <a href="mailto:allcurrencyinllc@gmail.com" class="policy-contact-email">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            allcurrencyinllc@gmail.com
+          </a>
+        </div>
+      </div>
+
+      <!-- Section 9 — Modifications -->
+      <div class="policy-section">
+        <div class="policy-section-num fade-up">Article 09</div>
+        <h2 class="policy-section-title fade-up delay-1">Modifications<br><span>de la Politique</span></h2>
+        <p class="policy-text fade-up delay-2">
+          C Pizza se réserve le droit de modifier cette politique de confidentialité à tout moment afin de refléter les changements dans nos pratiques ou les exigences légales applicables. Toute modification sera publiée sur cette page avec une date de mise à jour actualisée.
+        </p>
+        <p class="policy-text fade-up delay-3">
+          Nous vous encourageons à consulter régulièrement cette page pour rester informé de la façon dont nous protégeons vos données. Votre utilisation continue de notre service après la publication de modifications constitue votre acceptation de ces changements.
+        </p>
+        <p class="policy-text fade-up delay-4">
+          <strong>Dernière mise à jour :</strong> Mai 2025
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════
+       CTA BAND
+  ═══════════════════════════════════ -->
+  <section id="cta-band">
+    <div class="cta-band-inner">
+      <div>
+        <div class="cta-band-title">Pizza fraîche,<br><span>livrée chez vous</span></div>
+        <div class="cta-band-sub">Commandez en ligne — livraison en 30 min à Douala.</div>
+      </div>
+      <div class="cta-band-right">
+        <a href="commander.html" class="btn btn-outline-yellow">Commander maintenant →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════ -->
+  <footer id="footer" role="contentinfo">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div>
+          <div class="footer-brand-logo">
+            <img src="brand_assets/logo-new.jpeg" alt="Logo C Pizza" width="80" height="80">
+            <div>
+              <div class="footer-brand-name">C PIZZA</div>
+            </div>
+          </div>
+          <p class="footer-desc">Pizzeria artisanale à Douala, Cameroun. Pâte fermentée 72h, four à 450°C, livraison express.</p>
+        </div>
+
+        <div>
+          <div class="footer-col-title">Menu</div>
+          <ul class="footer-links">
+            <li><a href="menu.html">Pizzas Classiques</a></li>
+            <li><a href="menu.html">Pizzas Spéciales</a></li>
+            <li><a href="menu.html">Végétariennes</a></li>
+            <li><a href="offres.html">Offres du moment</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-col-title">Informations</div>
+          <ul class="footer-links">
+            <li><a href="nous-trouver.html">Nous trouver</a></li>
+            <li><a href="index.html#avis">Avis clients</a></li>
+            <li><a href="commander.html">Commander en ligne</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-col-title">Contact</div>
+          <ul class="footer-links">
+            <li><a href="tel:+237620609297">+237 6 20 60 92 97</a></li>
+            <li><a href="nous-trouver.html">Yassa · Essos · Odza · Bonamoussadi</a></li>
+            <li><a href="#">Douala, Cameroun</a></li>
+            <li><a href="#">Lun – Dim : 11h – 23h30</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="footer-copy">© <span class="year"></span> C PIZZA — Tous droits réservés</p>
+        <div class="footer-legal">
+          <a href="#">Mentions légales</a>
+          <a href="privacy.html" class="active-legal">Politique de confidentialité</a>
+          <a href="#">CGU</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Year
+    document.querySelectorAll('.year').forEach(el => el.textContent = new Date().getFullYear());
+
+    // Nav scroll
+    const nav = document.getElementById('main-nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    // Mobile burger
+    const burger = document.getElementById('burger-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    burger.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('open');
+      burger.setAttribute('aria-expanded', open);
+    });
+    mobileMenu.addEventListener('click', e => {
+      if (e.target.tagName === 'A') mobileMenu.classList.remove('open');
+    });
+
+    // Fade-up on scroll
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
