@@ -69,8 +69,9 @@
     .section-label::before { content: ''; width: 28px; height: 2px; background: var(--yellow); }
 
     /* HERO */
-    #hero { background: var(--black-deep); padding: 140px 32px 60px; text-align: center; }
-    .hero-inner { max-width: 800px; margin: 0 auto; }
+    #hero { background: var(--black-deep); padding: 140px 32px 60px; text-align: center; position: relative; overflow: hidden; }
+    #hero::before { content: ''; position: absolute; inset: 0; background: url('banner-pizza.webp') center/cover; opacity: 0.18; }
+    .hero-inner { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
     .hero-title { font-family: var(--font-display); font-size: clamp(4rem, 10vw, 8rem); color: var(--white); line-height: 0.92; letter-spacing: 0.02em; margin-bottom: 16px; }
     .hero-title span { color: var(--yellow); }
     .hero-sub { font-size: 1rem; color: var(--text-muted); line-height: 1.7; }
