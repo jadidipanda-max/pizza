@@ -212,9 +212,9 @@
 
     @media (max-width: 1024px) { .footer-top { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 768px) {
-      .nav-inner { grid-template-columns: 1fr auto; }
+      .nav-inner { position: relative; display: flex; justify-content: center; }
       .nav-links, .nav-cta { display: none; }
-      .nav-right { border-left: none; padding-left: 0; }
+      .nav-right { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); border-left: none; padding-left: 0; }
       .nav-burger { display: flex; }
       .offers-grid { grid-template-columns: 1fr; }
       .offre-card { flex-direction: column; min-height: auto; }
@@ -408,9 +408,9 @@
             <div><div class="footer-brand-name">C PIZZA</div></div>
           </div>
         </div>
-        <div><div class="footer-col-title">Menu</div><ul class="footer-links"><li><a href="menu.html">Pizzas Classiques</a></li><li><a href="menu.html">Pizzas Speciales</a></li><li><a href="menu.html">Vegetariennes</a></li><li><a href="offres.html">Offres du moment</a></li></ul></div>
+        <div><div class="footer-col-title">Menu</div><ul class="footer-links"><li><a href="menu.html#cat-classiques">Pizzas Classiques</a></li><li><a href="menu.html#cat-gourmandes">Les Gourmandes</a></li><li><a href="menu.html#cat-sandwichs">Sandwich &amp; Burger</a></li><li><a href="offres.html">Offres du moment</a></li></ul></div>
         <div><div class="footer-col-title">Informations</div><ul class="footer-links"><li><a href="nous-trouver.html">Nous trouver</a></li><li><a href="commander.html">Commander en ligne</a></li></ul></div>
-        <div><div class="footer-col-title">Contact</div><ul class="footer-links"><li><a href="tel:+237620609297">+237 6 20 60 92 97</a></li><li>Cameroun</li><li>Lun – Dim : 11h – 22h30</li></ul></div>
+        <div><div class="footer-col-title">Contact</div><ul class="footer-links"><li><a href="tel:+237622276401">+237 6 22 27 64 01</a></li><li>Cameroun</li><li>Lun – Dim : 11h – 22h30</li></ul></div>
       </div>
       <div class="footer-bottom">
         <p class="footer-copy">© <span class="year"></span> C PIZZA — Tous droits reserves</p>
