@@ -297,7 +297,7 @@
             <div class="delivery-opt-label">Livraison</div>
           </div>
           <div class="delivery-opt" data-mode="surplace" tabindex="0" role="button">
-            <div class="delivery-opt-label">Sur place</div>
+            <div class="delivery-opt-label">À emporter</div>
             <div class="delivery-opt-price">Gratuit</div>
           </div>
         </div>
@@ -567,7 +567,7 @@
         msg += `  • ${item.name}${meta} × ${item.quantity} — ${fmt(item.price * item.quantity)}\n`;
       });
       msg += `\n`;
-      msg += `🚗 *Mode :* ${isDelivery ? 'Livraison' : 'Sur place'}\n`;
+      msg += `🚗 *Mode :* ${isDelivery ? 'Livraison' : 'À emporter'}\n`;
       if (isDelivery && addr) {
         msg += `📮 *Adresse livraison :* ${addr}\n`;
       }
