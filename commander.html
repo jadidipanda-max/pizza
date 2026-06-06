@@ -554,28 +554,17 @@
       const sub = getSubtotal();
       const isDelivery = deliveryMode === 'livraison';
 
-      let msg = `🍕 *NOUVELLE COMMANDE C PIZZA*\n\n`;
-      msg += `📍 *Adresse :* ${LOC_NAMES[selectedLoc]}\n`;
-      msg += `👤 *Client :* ${name}\n`;
-      msg += `📞 *Tel :* ${phone}\n\n`;
-      msg += `📋 *Commande :*\n`;
-      cart.forEach(item => {
-        const parts = [];
-        if (item.variant) parts.push(item.variant);
-        if (item.size && item.size !== '-') parts.push(item.size);
-        const meta = parts.length ? ` (${parts.join(' · ')})` : '';
-        msg += `  • ${item.name}${meta} × ${item.quantity} — ${fmt(item.price * item.quantity)}\n`;
-      });
-      msg += `\n`;
-      msg += `🚗 *Mode :* ${isDelivery ? 'Livraison' : 'À emporter'}\n`;
-      if (isDelivery && addr) {
-        msg += `📮 *Adresse livraison :* ${addr}\n`;
-      }
-      msg += `\n`;
-      msg += `💰 Sous-total : ${fmt(sub)}\n`;
-      if (isDelivery) msg += `🛵 Livraison : à confirmer selon adresse\n`;
-      msg += `✅ *TOTAL (hors livraison) : ${fmt(sub)}*\n`;
-      msg += `\nMerci ! 🙏`;
+      // Format structuré parsé par le bot WhatsApp
+      const LOC_BRANCH = { yassa: 'Yassa', essos: 'Essos', odza: 'Odza', bonamoussadi: 'Bonamoussadi' };
+      const agence = LOC_BRANCH[selectedLoc] || selectedLoc;
+      const itemsStr = cart.map(item => {
+        const sizePart = item.size && item.size !== '-' ? ` ${item.size}` : '';
+        return `${item.quantity}x ${item.name}${sizePart} ${item.price} FCFA`;
+      }).join(',');
+      const safeName  = name.replace(/\|/g, '').trim();
+      const safePhone = phone.replace(/\|/g, '').trim();
+      const modeStr   = isDelivery ? 'livraison' : 'emporter';
+      const msg = `COMMANDE_WEB|${agence}|${itemsStr}|${modeStr}|${safeName}|${safePhone}`;
 
       const encoded = encodeURIComponent(msg);
       window.open(`https://wa.me/237622276401?text=${encoded}`, '_blank');
