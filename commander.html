@@ -563,8 +563,9 @@
       }).join(',');
       const safeName  = name.replace(/\|/g, '').trim();
       const safePhone = phone.replace(/\|/g, '').trim();
+      const safeAddr  = isDelivery ? addr.replace(/\|/g, '').trim() : '';
       const modeStr   = isDelivery ? 'livraison' : 'emporter';
-      const msg = `COMMANDE_WEB|${agence}|${itemsStr}|${modeStr}|${safeName}|${safePhone}`;
+      const msg = `COMMANDE_WEB|${agence}|${itemsStr}|${modeStr}|${safeName}|${safePhone}|${safeAddr}`;
 
       const encoded = encodeURIComponent(msg);
       window.open(`https://wa.me/237622276401?text=${encoded}`, '_blank');
